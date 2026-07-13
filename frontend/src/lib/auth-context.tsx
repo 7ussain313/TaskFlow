@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import type { AuthUser } from '@/types/auth';
 import { AUTH_TOKEN_KEY } from './api-client';
 
@@ -26,6 +27,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   // On first render, check localStorage for a token/user from a previous session.
   useEffect(() => {
@@ -40,19 +42,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  // Persists the token/user after a successful API login and updates state.
-  const login = useCallback((token: string, user: AuthUser) => {
-    window.localStorage.setItem(AUTH_TOKEN_KEY, token);
-    window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-    setUser(user);
-  }, []);
+  // Persists the token/user after a successful API login and updates state. Clears
+  // the React Query cache first so a previous session's data (e.g. another user's
+  // work items, still cached from before logout) can never flash on screen.
+  const login = useCallback(
+    (token: string, user: AuthUser) => {
+      queryClient.clear();
+      window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+      window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+      setUser(user);
+    },
+    [queryClient],
+  );
 
-  // Clears the stored session so the user is treated as signed out.
+  // Clears the stored session and all cached query data so the user is fully signed out.
   const logout = useCallback(() => {
     window.localStorage.removeItem(AUTH_TOKEN_KEY);
     window.localStorage.removeItem(AUTH_USER_KEY);
+    queryClient.clear();
     setUser(null);
-  }, []);
+  }, [queryClient]);
 
   const value = useMemo(
     () => ({ user, isLoading, login, logout }),

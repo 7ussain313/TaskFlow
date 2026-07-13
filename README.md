@@ -28,7 +28,11 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 - Node.js 20+ and npm
 - A PostgreSQL database — either:
   - **Cloud (recommended, no local install):** a free [Neon](https://neon.tech) or
-    [Supabase](https://supabase.com) Postgres project, or
+    [Supabase](https://supabase.com) Postgres project. **On Neon, use the pooled
+    connection string** (the one with `-pooler` in the hostname, `pgbouncer=true`
+    query param) — this app makes several short-lived queries per page, and Neon's
+    direct (non-pooled) connection adds several seconds of connection-setup latency
+    per burst of activity that the pooled endpoint avoids.
   - **Local via Docker:** `docker compose up -d` from the repo root starts Postgres
     on `localhost:5432` (user/pass/db: `taskflow`).
 

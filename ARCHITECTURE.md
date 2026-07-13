@@ -67,13 +67,16 @@ Base path: `/api`. All responses use a consistent envelope on error:
 ### Work items (`/api/work-items`)
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/work-items` | JWT | Manager: all (filterable `?status=&assigneeId=&priority=`). Member: scoped to own assignments only, enforced in the query |
-| GET | `/work-items/assigned-to-me` | JWT, Member | explicit "assigned to me" view |
+| GET | `/work-items` | JWT | Manager: all (filters added in Phase 8). Member: scoped to own assignments only, enforced in the query — unassigned/unauthorized items 404, not 403 |
+| GET | `/work-items/assigned-to-me` | JWT, Member | explicit "assigned to me" view (Phase 5) |
 | GET | `/work-items/:id` | JWT | 404 if not visible to caller |
-| POST | `/work-items` | JWT, Manager | multipart/form-data (fields + optional image) |
-| PATCH | `/work-items/:id` | JWT, Manager | field edits, not status |
-| DELETE | `/work-items/:id` | JWT, Manager | |
-| POST | `/work-items/:id/image` | JWT, Manager | replace/add attachment |
+| POST | `/work-items` | JWT, Manager | multipart/form-data (fields + optional `image`) |
+| PATCH | `/work-items/:id` | JWT, Manager | multipart/form-data; field edits + optional new `image`; never accepts `status` (`forbidNonWhitelisted` rejects it with 400 — status only changes through the Phase 6 workflow actions) |
+| DELETE | `/work-items/:id` | JWT, Manager | cascades assignments/activity/extensions; also deletes the attached image file from disk |
+
+Note: no separate `/work-items/:id/image` endpoint — image upload is folded into the
+`POST`/`PATCH` multipart bodies above, since NestJS's `FileInterceptor` handles an
+optional field cleanly and a dedicated endpoint would just duplicate the same logic.
 
 ### Assignments (`/api/work-items/:id/assignments`)
 | Method | Path | Auth | Notes |
@@ -114,16 +117,24 @@ Base path: `/api`. All responses use a consistent envelope on error:
    the token on every request; `RolesGuard` + `@Roles('MANAGER')` enforces role checks
    at the handler level. Ownership/scoping (member-sees-own-items) is enforced inside
    the service query layer, not the guard, since it's per-row not per-route.
-5. Passwords are never included in any response DTO (`class-transformer` `@Exclude`).
+5. Passwords are never included in a response — `AuthService` builds the returned
+   user object field-by-field (`sanitizeUser`) rather than forwarding the Prisma row,
+   so there's no risk of `passwordHash` leaking through a future field addition.
 
 ## 4. Image upload flow
-1. `POST /work-items` (multipart) or `POST /work-items/:id/image` hits a Multer
-   interceptor configured with `fileFilter` (mime type allow-list) and `limits.fileSize`.
-2. Invalid type/size → Nest throws before the file touches disk → `400 Bad Request`.
-3. Valid file is written to `backend/uploads/<uuid>.<ext>`; the WorkItem row stores the
-   relative path (`imagePath`).
-4. `main.ts` serves `/uploads` as a static directory so the frontend can render
-   `<img src="${API_URL}/uploads/<file>">` directly in the item view.
+1. `POST /work-items` and `PATCH /work-items/:id` (multipart) hit a Multer
+   `FileInterceptor` configured with `diskStorage` + a `fileFilter`.
+2. `fileFilter` rejects a bad mime type (anything other than PNG/JPEG/WEBP) with a
+   `400 Bad Request` *before* Multer writes any bytes to disk — an invalid upload
+   never leaves an orphaned file behind.
+3. A `ParseFilePipe` with `MaxFileSizeValidator` then rejects an oversized file
+   (`413`-shaped as our standard `400` error format) — Multer's own diskStorage
+   cleans up a partial file automatically when a write is rejected mid-stream.
+4. A valid file is written to `backend/uploads/<uuid>.<ext>`; the WorkItem row stores
+   the generated filename (`imagePath`). On update with a new image, the old file is
+   deleted from disk; on work item delete, the attached file is deleted too.
+5. `main.ts` serves `/uploads` as a static directory (outside the `/api` prefix) so the
+   frontend can render `<img src="${API_ORIGIN}/uploads/<imagePath>">` directly.
 
 ## 5. Testing strategy
 - **Backend unit tests** (Jest): `WorkflowService` transition table (legal + illegal

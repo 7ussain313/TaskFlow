@@ -11,15 +11,17 @@ import { useAuth } from '@/lib/auth-context';
 import { getErrorMessage } from '@/lib/get-error-message';
 import type { LoginResponse } from '@/types/auth';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
   email: z.string().email('Enter a valid email'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-// Real login form: submits to POST /auth/login, stores the token, then redirects.
-export default function LoginPage() {
+// Registers a new MEMBER account (role is always MEMBER server-side — see
+// SYSTEM_DESIGN.md), logs them straight in, and redirects.
+export default function RegisterPage() {
   const auth = useAuth();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -27,12 +29,12 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+  } = useForm<RegisterFormValues>({ resolver: zodResolver(registerSchema) });
 
-  const onSubmit = async (values: LoginFormValues) => {
+  const onSubmit = async (values: RegisterFormValues) => {
     setServerError(null);
     try {
-      const { data } = await apiClient.post<LoginResponse>('/auth/login', values);
+      const { data } = await apiClient.post<LoginResponse>('/auth/register', values);
       auth.login(data.accessToken, data.user);
       router.push('/dashboard');
     } catch (error) {
@@ -46,14 +48,25 @@ export default function LoginPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-sm rounded-lg border border-black/10 p-8 dark:border-white/15"
       >
-        <h1 className="text-xl font-semibold">Sign in to TaskFlow</h1>
+        <h1 className="text-xl font-semibold">Create your TaskFlow account</h1>
+        <p className="mt-1 text-xs text-zinc-500">
+          New accounts are created as Members. A Manager account is seeded — see the README.
+        </p>
 
-        <label className="mt-6 block text-sm font-medium">Email</label>
+        <label className="mt-6 block text-sm font-medium">Name</label>
+        <input
+          {...register('name')}
+          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+          placeholder="Jane Doe"
+        />
+        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+
+        <label className="mt-4 block text-sm font-medium">Email</label>
         <input
           type="email"
           {...register('email')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
-          placeholder="manager@taskflow.dev"
+          placeholder="jane@taskflow.dev"
         />
         {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
 
@@ -62,7 +75,7 @@ export default function LoginPage() {
           type="password"
           {...register('password')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
-          placeholder="••••••••"
+          placeholder="At least 8 characters"
         />
         {errors.password && (
           <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
@@ -75,13 +88,13 @@ export default function LoginPage() {
           disabled={isSubmitting}
           className="mt-6 w-full rounded bg-foreground px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
         >
-          {isSubmitting ? 'Signing in…' : 'Sign in'}
+          {isSubmitting ? 'Creating account…' : 'Create account'}
         </button>
 
         <p className="mt-4 text-center text-sm text-zinc-500">
-          No account?{' '}
-          <Link href="/register" className="underline">
-            Register
+          Already have an account?{' '}
+          <Link href="/login" className="underline">
+            Sign in
           </Link>
         </p>
       </form>

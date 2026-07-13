@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 
@@ -38,9 +39,8 @@ export default function ProtectedLayout({
         <div className="flex items-center gap-6">
           <span className="font-semibold">TaskFlow</span>
           <nav className="flex gap-4 text-sm text-zinc-500">
-            <a href="/dashboard">Dashboard</a>
-            <a href="/board">Board</a>
-            <a href="/timeline">Timeline</a>
+            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/work-items">Work Items</Link>
           </nav>
         </div>
         <div className="flex items-center gap-4 text-sm">

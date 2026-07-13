@@ -115,14 +115,14 @@
 - [x] Validation errors.
 - [x] Consistent API response format.
 - [x] 401 responses.
-- [ ] 403 responses. <!-- RolesGuard built + unit-tested; no live @Roles() endpoint to hit end-to-end until Phase 4/5 add Manager-only routes -->
-- [ ] 404 responses. <!-- no lookup-by-id endpoints exist yet; lands with work-item CRUD in Phase 4 -->
+- [x] 403 responses. <!-- verified live in Phase 4: Member POST /work-items -> 403 -->
+- [x] 404 responses. <!-- verified live in Phase 4: unknown id, and Member reading an unassigned item -->
 - [x] Conflict handling.
 
 **✅ Done When**
 - [x] Authentication works.
 - [x] Unauthorized users cannot access protected endpoints.
-- [ ] Members cannot perform Manager actions. <!-- mechanism is built and unit-tested; needs a real Manager-only endpoint (Phase 4+) to verify end-to-end -->
+- [x] Members cannot perform Manager actions. <!-- verified live in Phase 4: Alice blocked from creating a work item -->
 - [x] API errors are consistent.
 
 ---
@@ -130,29 +130,29 @@
 ## 📌 Phase 4 – Work Items
 
 ### Module: CRUD
-- [ ] Create Work Item.
-- [ ] Read Work Item.
-- [ ] Update Work Item.
-- [ ] Delete Work Item.
+- [x] Create Work Item.
+- [x] Read Work Item. <!-- scoped: Manager sees all, Member sees only assigned (built ahead of Phase 8 since it was cheap to do correctly from the start) -->
+- [x] Update Work Item. <!-- status field is excluded on purpose; enforced 400 if someone tries to sneak it in -->
+- [x] Delete Work Item.
 
 ### Module: Validation
-- [ ] Title validation.
-- [ ] Description validation.
-- [ ] Due date validation.
-- [ ] Priority validation.
-- [ ] Category validation.
+- [x] Title validation.
+- [x] Description validation.
+- [x] Due date validation.
+- [x] Priority validation.
+- [x] Category validation.
 
 ### Module: Image Upload
-- [ ] Configure Multer.
-- [ ] Validate image type.
-- [ ] Validate image size.
-- [ ] Save uploaded file.
-- [ ] Display uploaded image.
+- [x] Configure Multer.
+- [x] Validate image type. <!-- rejected in fileFilter before any disk write, so a bad upload never orphans a file -->
+- [x] Validate image size.
+- [x] Save uploaded file.
+- [x] Display uploaded image. <!-- served statically at /uploads/<file>, verified via live GET -->
 
 **✅ Done When**
-- [ ] CRUD is complete.
-- [ ] Images upload successfully.
-- [ ] Validation works.
+- [x] CRUD is complete.
+- [x] Images upload successfully.
+- [x] Validation works.
 
 ---
 
