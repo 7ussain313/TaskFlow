@@ -40,6 +40,8 @@ export default function ProtectedLayout({
           <span className="font-semibold">TaskFlow</span>
           <nav className="flex gap-4 text-sm text-zinc-500">
             <Link href="/dashboard">Dashboard</Link>
+            <Link href="/board">Board</Link>
+            <Link href="/timeline">Timeline</Link>
             <Link href="/work-items">Work Items</Link>
           </nav>
         </div>

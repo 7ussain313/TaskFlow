@@ -219,36 +219,36 @@
 ## 📌 Phase 7 – Timeline & Dashboard
 
 ### Module: Timeline
-- [ ] Timeline view.
-- [ ] Today marker.
-- [ ] Sort by due date.
-- [ ] Status badges.
-- [ ] Overdue indicator.
+- [x] Timeline view. <!-- grouped by calendar date, chronological -->
+- [x] Today marker. <!-- distinct divider, correctly positioned even when no items fall exactly today (verified live) -->
+- [x] Sort by due date. <!-- server already returns dueDate asc -->
+- [x] Status badges. <!-- validated dataviz palette, categorical hues in fixed order -->
+- [x] Overdue indicator. <!-- shared OverdueBadge, status "critical" token -->
 
 ### Module: Phase Board
-- [ ] Backlog
-- [ ] Assigned
-- [ ] In Progress
-- [ ] In Review
-- [ ] Done
-- [ ] Cancelled
+- [x] Backlog
+- [x] Assigned
+- [x] In Progress
+- [x] In Review
+- [x] Done
+- [x] Cancelled
 
 ### Module: Dashboard
-- [ ] Total items.
-- [ ] Overdue items.
-- [ ] In Review count.
-- [ ] Done today count.
+- [x] Total items.
+- [x] Overdue items.
+- [x] In Review count.
+- [x] Done today count. <!-- proxied via updatedAt on DONE items — documented assumption, no dedicated completedAt field -->
 
 ### Module: UX
-- [ ] Loading states.
-- [ ] Empty states.
-- [ ] Error states.
-- [ ] Automatic refresh using React Query.
+- [x] Loading states.
+- [x] Empty states.
+- [x] Error states.
+- [x] Automatic refresh using React Query. <!-- mutation-triggered invalidation + 15s background poll so cross-user changes show up too -->
 
 **✅ Done When**
-- [ ] Timeline is complete.
-- [ ] Board updates automatically.
-- [ ] Dashboard is responsive and intuitive.
+- [x] Timeline is complete.
+- [x] Board updates automatically.
+- [x] Dashboard is responsive and intuitive.
 
 ---
 

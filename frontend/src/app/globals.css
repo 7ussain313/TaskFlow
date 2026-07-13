@@ -3,6 +3,22 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Status/priority colors — validated reference palette (dataviz skill).
+     Categorical hues in fixed order, status roles reserved and never reused. */
+  --status-backlog: #898781;
+  --status-assigned: #2a78d6;
+  --status-in-progress: #eda100;
+  --status-in-review: #4a3aa7;
+  --status-done: #0ca30c;
+  --status-cancelled: #d03b3b;
+
+  --priority-low: #86b6ef;
+  --priority-medium: #3987e5;
+  --priority-high: #1c5cab;
+  --priority-urgent: #d03b3b;
+
+  --status-overdue: #d03b3b;
 }
 
 @theme inline {
@@ -10,12 +26,34 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-status-backlog: var(--status-backlog);
+  --color-status-assigned: var(--status-assigned);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-in-review: var(--status-in-review);
+  --color-status-done: var(--status-done);
+  --color-status-cancelled: var(--status-cancelled);
+
+  --color-priority-low: var(--priority-low);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-high: var(--priority-high);
+  --color-priority-urgent: var(--priority-urgent);
+
+  --color-status-overdue: var(--status-overdue);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    --status-assigned: #3987e5;
+    --status-in-progress: #c98500;
+    --status-in-review: #9085e9;
+
+    --priority-low: #5598e7;
+    --priority-medium: #2a78d6;
+    --priority-high: #184f95;
   }
 }
 

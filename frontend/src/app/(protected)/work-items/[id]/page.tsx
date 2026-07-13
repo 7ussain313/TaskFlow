@@ -7,9 +7,11 @@ import { useAuth } from '@/lib/auth-context';
 import { useDeleteWorkItem, useWorkItem } from '@/hooks/use-work-items';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
+import { OverdueBadge } from '@/components/overdue-badge';
 import { AssigneesEditor } from '@/components/assignees-editor';
 import { WorkflowActions } from '@/components/workflow-actions';
 import { ExtensionRequestPanel } from '@/components/extension-request-panel';
+import { ActivityLog } from '@/components/activity-log';
 import { getImageUrl } from '@/lib/image-url';
 
 // Detail view of a single work item: read-only fields, Manager-only edit/delete/
@@ -47,11 +49,7 @@ export default function WorkItemDetailPage({
       <div className="mt-4 flex items-start justify-between">
         <h1 className="text-xl font-semibold">{item.title}</h1>
         <div className="flex items-center gap-2">
-          {item.isOverdue && (
-            <span className="rounded-full bg-red-600 px-2 py-0.5 text-xs font-medium text-white">
-              Overdue
-            </span>
-          )}
+          {item.isOverdue && <OverdueBadge />}
           <PriorityBadge priority={item.priority} />
           <StatusBadge status={item.status} />
         </div>
@@ -138,6 +136,8 @@ export default function WorkItemDetailPage({
       />
 
       <ExtensionRequestPanel item={item} isManager={isManager} isAssignee={isAssignee} />
+
+      <ActivityLog workItemId={item.id} />
     </div>
   );
 }

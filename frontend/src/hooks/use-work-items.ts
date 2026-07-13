@@ -26,6 +26,9 @@ function toFormData(input: WorkItemFormInput): FormData {
 }
 
 // Fetches every work item visible to the current user (scoped server-side by role).
+// Polls in the background so the Board/Timeline reflect another user's changes
+// without a manual refresh, on top of the immediate refetch every mutation
+// already triggers via cache invalidation.
 export function useWorkItems() {
   return useQuery({
     queryKey: ['work-items'],
@@ -33,6 +36,7 @@ export function useWorkItems() {
       const { data } = await apiClient.get<WorkItem[]>('/work-items');
       return data;
     },
+    refetchInterval: 15000,
   });
 }
 

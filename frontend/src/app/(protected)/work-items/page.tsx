@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useWorkItems } from '@/hooks/use-work-items';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
+import { OverdueBadge } from '@/components/overdue-badge';
 
 // Simple list of every work item visible to the current user (API-scoped by role).
 export default function WorkItemsPage() {
@@ -55,11 +56,7 @@ export default function WorkItemsPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {item.isOverdue && (
-                    <span className="rounded-full bg-red-600 px-2 py-0.5 text-xs font-medium text-white">
-                      Overdue
-                    </span>
-                  )}
+                  {item.isOverdue && <OverdueBadge />}
                   <PriorityBadge priority={item.priority} />
                   <StatusBadge status={item.status} />
                 </div>
