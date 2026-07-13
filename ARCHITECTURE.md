@@ -1,0 +1,144 @@
+# TaskFlow — Architecture
+
+## 1. Folder structure
+
+```
+TaskFlow/
+├── backend/                     # NestJS API
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   ├── migrations/
+│   │   └── seed.ts
+│   ├── src/
+│   │   ├── auth/                # register, login, JWT strategy, guards, decorators
+│   │   ├── users/                # user lookups (used by auth + assignment pickers)
+│   │   ├── work-items/           # CRUD, image upload, DTOs
+│   │   ├── assignments/          # assign/reassign/remove
+│   │   ├── workflow/             # WorkflowService — the state machine, single source
+│   │   │                         # of truth for status transitions
+│   │   ├── extension-requests/   # request/approve/reject due-date extensions
+│   │   ├── activity-log/         # append-only log + read endpoints
+│   │   ├── common/               # global exception filter, response DTOs, guards,
+│   │   │                         # decorators (@Roles, @CurrentUser), pipes
+│   │   ├── config/                # env validation / ConfigModule setup
+│   │   ├── app.module.ts
+│   │   └── main.ts
+│   ├── test/                     # e2e / integration tests (Supertest)
+│   ├── uploads/                  # local disk storage for image attachments (gitignored)
+│   ├── .env.example
+│   └── package.json
+├── frontend/                    # Next.js app
+│   ├── src/
+│   │   ├── app/                  # App Router pages (login, register, dashboard,
+│   │   │                         # board, timeline, items/[id])
+│   │   ├── components/           # PhaseBoard, TimelineView, WorkItemCard, StatusBadge,
+│   │   │                         # WorkItemForm, AssignmentPicker, ActivityFeed, ...
+│   │   ├── lib/                  # axios client, react-query setup, auth context
+│   │   ├── hooks/                # useWorkItems, useWorkflowActions, useAuth, ...
+│   │   ├── types/                # shared TS types mirroring backend DTOs
+│   │   └── test/                 # Vitest + Testing Library setup + component tests
+│   ├── .env.example
+│   └── package.json
+├── docker-compose.yml            # local Postgres for a clean-clone run
+├── SYSTEM_DESIGN.md
+├── ARCHITECTURE.md
+├── TODO.md
+├── TEST_PLAN.md                  # added in Phase 9
+└── README.md
+```
+
+## 2. REST API endpoints
+
+Base path: `/api`. All responses use a consistent envelope on error:
+`{ "statusCode": number, "message": string | string[], "error": string }`.
+
+### Auth (`/api/auth`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/auth/register` | public | creates a `MEMBER` (or `MANAGER` for seed only) |
+| POST | `/auth/login` | public | returns `{ accessToken, user }` |
+| GET | `/auth/me` | JWT | current user info |
+
+### Users (`/api/users`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/users?role=MEMBER` | JWT, Manager | for assignment picker |
+
+### Work items (`/api/work-items`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/work-items` | JWT | Manager: all (filterable `?status=&assigneeId=&priority=`). Member: scoped to own assignments only, enforced in the query |
+| GET | `/work-items/assigned-to-me` | JWT, Member | explicit "assigned to me" view |
+| GET | `/work-items/:id` | JWT | 404 if not visible to caller |
+| POST | `/work-items` | JWT, Manager | multipart/form-data (fields + optional image) |
+| PATCH | `/work-items/:id` | JWT, Manager | field edits, not status |
+| DELETE | `/work-items/:id` | JWT, Manager | |
+| POST | `/work-items/:id/image` | JWT, Manager | replace/add attachment |
+
+### Assignments (`/api/work-items/:id/assignments`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| PUT | `/work-items/:id/assignments` | JWT, Manager | body `{ userIds: string[] }`, replaces the list |
+
+### Workflow actions (`/api/work-items/:id/...`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/work-items/:id/assign` | Manager | BACKLOG → ASSIGNED (+ sets assignees) |
+| POST | `/work-items/:id/start` | Member (assignee) | ASSIGNED → IN_PROGRESS |
+| POST | `/work-items/:id/submit-review` | Member (assignee) | IN_PROGRESS → IN_REVIEW |
+| POST | `/work-items/:id/accept` | Manager | IN_REVIEW → DONE |
+| POST | `/work-items/:id/send-back` | Manager | IN_REVIEW → IN_PROGRESS |
+| POST | `/work-items/:id/cancel` | Manager | → CANCELLED |
+| POST | `/work-items/:id/reopen` | Manager | DONE/CANCELLED → BACKLOG/ASSIGNED |
+
+### Extension requests (`/api/work-items/:id/extension-requests`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/work-items/:id/extension-requests` | Member (assignee) | body `{ proposedDueDate }` |
+| POST | `/extension-requests/:id/approve` | Manager | |
+| POST | `/extension-requests/:id/reject` | Manager | |
+
+### Activity log (`/api/work-items/:id/activity`)
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/work-items/:id/activity` | JWT | scoped same as the parent item |
+
+## 3. Authentication flow
+1. `POST /auth/register` → bcrypt-hash password (cost 10+), create `User`, return JWT.
+2. `POST /auth/login` → verify email + bcrypt compare → sign JWT
+   (`sub`, `email`, `role`, short expiry e.g. 8h) → return `{ accessToken, user }`.
+3. Frontend stores the token (in-memory + httpOnly-friendly fallback to localStorage
+   for this assessment — documented tradeoff) and attaches `Authorization: Bearer <token>`
+   via an Axios interceptor.
+4. `JwtAuthGuard` (global, with `@Public()` escape hatch on register/login) validates
+   the token on every request; `RolesGuard` + `@Roles('MANAGER')` enforces role checks
+   at the handler level. Ownership/scoping (member-sees-own-items) is enforced inside
+   the service query layer, not the guard, since it's per-row not per-route.
+5. Passwords are never included in any response DTO (`class-transformer` `@Exclude`).
+
+## 4. Image upload flow
+1. `POST /work-items` (multipart) or `POST /work-items/:id/image` hits a Multer
+   interceptor configured with `fileFilter` (mime type allow-list) and `limits.fileSize`.
+2. Invalid type/size → Nest throws before the file touches disk → `400 Bad Request`.
+3. Valid file is written to `backend/uploads/<uuid>.<ext>`; the WorkItem row stores the
+   relative path (`imagePath`).
+4. `main.ts` serves `/uploads` as a static directory so the frontend can render
+   `<img src="${API_URL}/uploads/<file>">` directly in the item view.
+
+## 5. Testing strategy
+- **Backend unit tests** (Jest): `WorkflowService` transition table (legal + illegal
+  transitions), role/permission guards, DTO validation edge cases.
+- **Backend integration tests** (Jest + Supertest, against a real test DB or the same
+  dev DB in a transaction/cleanup pattern): login → create work item → assign → verify
+  status + activity log.
+- **Auth/security tests**: no token → 401; wrong role → 403; malformed body → 400 with
+  consistent error shape.
+- **Frontend tests** (Vitest + Testing Library): at least one component test on the
+  Timeline/Board rendering logic or a workflow-action interaction.
+- Full detail + run commands go in `TEST_PLAN.md` (Phase 9).
+
+## 6. Development order
+Mirrors `TODO.md` phases 0 → 10: docs → project setup → DB schema/seed → auth →
+work items/upload → assignments → workflow engine → timeline/dashboard UI → filtering
+& access control → tests → final docs/QA pass. Each phase ends in a working, committed,
+pushed slice — no phase depends on unfinished work from a later phase.
