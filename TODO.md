@@ -334,3 +334,113 @@
 - [x] The project can be cloned and run by following only the README. <!-- verified for real, see above -->
 - [x] Every assessment requirement has been implemented or documented with a justified trade-off. <!-- see README "Assumptions & tradeoffs" and "What I'd improve" -->
 - [x] The submission is ready to send.
+
+---
+
+## 📌 Bonus Phase 11 – API Documentation (Swagger)
+
+### Module: Swagger Setup
+- [x] Install Swagger.
+- [x] Configure SwaggerModule.
+- [x] Add API title and description.
+- [x] Configure JWT Bearer authentication.
+
+### Module: Documentation
+- [x] Document Authentication endpoints.
+- [x] Document Work Item endpoints.
+- [x] Document Assignment endpoints.
+- [x] Document Workflow endpoints.
+- [x] Document Extension Request endpoints.
+
+**✅ Done When**
+- [x] Swagger UI loads successfully.
+- [x] Every API endpoint is documented.
+- [x] Protected endpoints support JWT authentication.
+
+---
+
+## 📌 Bonus Phase 12 – Docker Support
+
+### Module: Backend
+- [ ] Create Dockerfile.
+- [ ] Configure production build.
+
+### Module: Frontend
+- [ ] Create Dockerfile.
+- [ ] Configure production build.
+
+### Module: Docker Compose
+- [ ] Add PostgreSQL service.
+- [ ] Add Backend service.
+- [ ] Add Frontend service.
+- [ ] Configure environment variables.
+- [ ] Configure persistent database volume.
+
+**✅ Done When**
+- [ ] Entire application starts using one command.
+- [ ] Fresh environment works correctly.
+
+---
+
+## 📌 Bonus Phase 13 – CI/CD (GitHub Actions)
+
+### Module: Continuous Integration
+- [ ] Create GitHub Actions workflow.
+- [ ] Install dependencies.
+- [ ] Run backend tests.
+- [ ] Run frontend tests.
+- [ ] Verify project builds successfully.
+
+### Module: Code Quality
+- [ ] Run ESLint.
+- [ ] Verify formatting.
+
+**✅ Done When**
+- [ ] Every push automatically validates the project.
+- [ ] Workflow passes successfully.
+
+---
+
+## 📌 Bonus Phase 14 – Advanced Features
+
+### Module: Search
+- [ ] Search by title.
+- [ ] Search by description.
+
+### Module: Pagination
+- [ ] Backend pagination.
+- [ ] Frontend pagination.
+
+### Module: Sorting
+- [ ] Sort by due date.
+- [ ] Sort by priority.
+- [ ] Sort by status.
+
+**✅ Done When**
+- [ ] Search is responsive.
+- [ ] Large datasets are handled efficiently.
+
+---
+
+## 📌 Bonus Phase 15 – Production Polish
+
+### Module: Performance
+- [ ] Optimize database queries.
+- [ ] Optimize React rendering.
+- [ ] Optimize image loading.
+
+### Module: UX
+- [ ] Improve responsive design.
+- [ ] Improve animations.
+- [ ] Improve accessibility.
+- [ ] Improve keyboard navigation.
+
+### Module: Final Cleanup
+- [ ] Remove unused code.
+- [ ] Remove debug logs.
+- [ ] Review commit history.
+- [ ] Final code review.
+
+**✅ Done When**
+- [ ] Project is production-ready.
+- [ ] No obvious performance or UX issues remain.
