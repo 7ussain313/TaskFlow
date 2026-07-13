@@ -99,31 +99,31 @@
 ## 📌 Phase 3 – Authentication & Security
 
 ### Module: Authentication
-- [ ] Register.
-- [ ] Login.
-- [ ] Hash passwords.
-- [ ] JWT authentication.
+- [x] Register.
+- [x] Login.
+- [x] Hash passwords.
+- [x] JWT authentication.
 
 ### Module: Authorization
-- [ ] Role enum.
-- [ ] Role guards.
-- [ ] JWT guard.
-- [ ] Protect all endpoints.
+- [x] Role enum.
+- [x] Role guards.
+- [x] JWT guard.
+- [x] Protect all endpoints.
 
 ### Module: Error Handling
-- [ ] Global exception filter.
-- [ ] Validation errors.
-- [ ] Consistent API response format.
-- [ ] 401 responses.
-- [ ] 403 responses.
-- [ ] 404 responses.
-- [ ] Conflict handling.
+- [x] Global exception filter.
+- [x] Validation errors.
+- [x] Consistent API response format.
+- [x] 401 responses.
+- [ ] 403 responses. <!-- RolesGuard built + unit-tested; no live @Roles() endpoint to hit end-to-end until Phase 4/5 add Manager-only routes -->
+- [ ] 404 responses. <!-- no lookup-by-id endpoints exist yet; lands with work-item CRUD in Phase 4 -->
+- [x] Conflict handling.
 
 **✅ Done When**
-- [ ] Authentication works.
-- [ ] Unauthorized users cannot access protected endpoints.
-- [ ] Members cannot perform Manager actions.
-- [ ] API errors are consistent.
+- [x] Authentication works.
+- [x] Unauthorized users cannot access protected endpoints.
+- [ ] Members cannot perform Manager actions. <!-- mechanism is built and unit-tested; needs a real Manager-only endpoint (Phase 4+) to verify end-to-end -->
+- [x] API errors are consistent.
 
 ---
 
