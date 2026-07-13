@@ -2,45 +2,7 @@
 
 import { useWorkItems } from '@/hooks/use-work-items';
 import { WorkItemCard } from '@/components/work-item-card';
-import type { WorkItem } from '@/types/work-item';
-
-function dateKey(iso: string): string {
-  return new Date(iso).toDateString();
-}
-
-function formatGroupHeading(dateStr: string): string {
-  const date = new Date(dateStr);
-  const today = new Date();
-  const diffDays = Math.round(
-    (new Date(date.toDateString()).getTime() - new Date(today.toDateString()).getTime()) /
-      (24 * 60 * 60 * 1000),
-  );
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Tomorrow';
-  if (diffDays === -1) return 'Yesterday';
-  return date.toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
-// Groups items (already sorted by dueDate asc from the API) into same-day buckets,
-// preserving chronological order.
-function groupByDate(items: WorkItem[]): { dateStr: string; items: WorkItem[] }[] {
-  const groups: { dateStr: string; items: WorkItem[] }[] = [];
-  for (const item of items) {
-    const key = dateKey(item.dueDate);
-    const last = groups[groups.length - 1];
-    if (last && last.dateStr === key) {
-      last.items.push(item);
-    } else {
-      groups.push({ dateStr: key, items: [item] });
-    }
-  }
-  return groups;
-}
+import { findTodayMarkerIndex, formatGroupHeading, groupByDate } from '@/lib/timeline';
 
 // Timeline: every visible work item placed chronologically by due date, with a
 // clear divider marking where "today" falls among them.
@@ -49,12 +11,7 @@ export default function TimelinePage() {
 
   const groups = items ? groupByDate(items) : [];
   const todayStr = new Date().toDateString();
-  const todayTime = new Date(todayStr).getTime();
-  // Index of the first group on or after today — where the "Today" divider goes.
-  // -1 means every item is already in the past, so it trails at the end instead.
-  const firstFutureOrTodayIndex = groups.findIndex(
-    (group) => new Date(group.dateStr).getTime() >= todayTime,
-  );
+  const firstFutureOrTodayIndex = findTodayMarkerIndex(groups);
 
   return (
     <div>

@@ -273,24 +273,24 @@
 ## 📌 Phase 9 – Testing & Quality Assurance
 
 ### Module: Backend Tests
-- [ ] Workflow transition tests.
-- [ ] Role permission tests.
-- [ ] Authentication tests.
-- [ ] Integration test (login → create → assign).
+- [x] Workflow transition tests. <!-- workflow.service.spec.ts — 15 cases, legal/illegal transitions, dynamic reopen target -->
+- [x] Role permission tests. <!-- roles.guard.spec.ts (Phase 3) -->
+- [x] Authentication tests. <!-- auth.e2e-spec.ts (Phase 3) -->
+- [x] Integration test (login → create → assign). <!-- work-items.e2e-spec.ts, real DB -->
 
 ### Module: Frontend Tests
-- [ ] One meaningful component test.
-- [ ] Timeline rendering or workflow interaction test.
+- [x] One meaningful component test. <!-- workflow-actions.test.tsx -->
+- [x] Timeline rendering or workflow interaction test. <!-- both: timeline.test.ts (grouping/today-marker) + workflow-actions.test.tsx -->
 
 ### Module: Validation
-- [ ] Invalid input tests.
-- [ ] Unauthorized request tests.
-- [ ] Forbidden request tests.
+- [x] Invalid input tests. <!-- 400 cases across auth + work-items e2e specs -->
+- [x] Unauthorized request tests. <!-- 401 cases -->
+- [x] Forbidden request tests. <!-- 403 cases, unit + e2e -->
 
 **✅ Done When**
-- [ ] All tests pass.
-- [ ] API behaves correctly.
-- [ ] Core workflow is verified.
+- [x] All tests pass. <!-- backend: 3 unit suites (20 tests) + 3 e2e suites (10 tests). frontend: 2 suites (14 tests) -->
+- [x] API behaves correctly.
+- [x] Core workflow is verified.
 
 ---
 

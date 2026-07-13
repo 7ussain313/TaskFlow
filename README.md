@@ -20,7 +20,7 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 - [`ARCHITECTURE.md`](./ARCHITECTURE.md) — folder structure, REST API reference,
   auth flow, image upload flow, testing strategy
 - [`TODO.md`](./TODO.md) — development checklist / progress tracker
-- `TEST_PLAN.md` — what's tested and how to run it (added in the testing phase)
+- [`TEST_PLAN.md`](./TEST_PLAN.md) — what's tested and how to run it
 
 ## Setup instructions
 
@@ -74,7 +74,15 @@ due-date extension request — so the Timeline/Board and dashboard have meaningf
 on first load.
 
 ## Running tests
-_To be added once the test suites exist (Phase 9)._
+```bash
+cd backend
+npm run test        # unit tests (guards, workflow state machine)
+npm run test:e2e    # integration tests (real DB — login/create/assign, 401/403/400)
+
+cd frontend
+npm run test        # component + logic tests (Vitest + Testing Library)
+```
+See [`TEST_PLAN.md`](./TEST_PLAN.md) for what each suite actually covers.
 
 ## Assumptions & tradeoffs
 See the "Assumptions" section of `SYSTEM_DESIGN.md`. This section will be expanded
