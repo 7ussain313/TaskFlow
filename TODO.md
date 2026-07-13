@@ -42,7 +42,7 @@
 - [x] Configure environment variables.
 - [x] Enable ValidationPipe.
 - [x] Configure CORS.
-- [ ] Configure Swagger (optional if time allows).
+- [x] Configure Swagger (optional if time allows). <!-- done properly in Bonus Phase 11 -->
 
 ### Module: Frontend
 - [x] Create Next.js project.
