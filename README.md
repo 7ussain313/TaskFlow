@@ -132,11 +132,12 @@ tradeoffs made along the way:
   the assessment's explicit requirements.
 
 ## What I'd improve with more time
-- **Bonus items skipped in favor of a solid core**, per the assessment's own
-  guidance ("less, done well"): multiple attachments per item, soft delete,
-  pagination, comments, in-app notifications, search, drag-to-reschedule,
-  Playwright E2E in CI, Docker for the app itself (only Postgres is
-  dockerized), and Swagger API docs.
+- **Bonus items skipped in favor of a solid core first**, per the assessment's
+  own guidance ("less, done well"): search, pagination/sorting, Docker for the
+  full stack, and Swagger API docs were all added afterward as bonus phases
+  (see commit history / `TODO.md`). Still not attempted: multiple attachments
+  per item, soft delete, comments, in-app notifications, drag-to-reschedule,
+  and Playwright E2E in CI.
 - **Real-time updates via WebSockets/SSE** instead of the current 15s polling +
   mutation-triggered refetch — works well at this scale but wouldn't scale to
   many concurrent users watching the same board.
