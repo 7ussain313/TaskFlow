@@ -404,21 +404,21 @@
 ## 📌 Bonus Phase 14 – Advanced Features
 
 ### Module: Search
-- [ ] Search by title.
-- [ ] Search by description.
+- [x] Search by title.
+- [x] Search by description.
 
 ### Module: Pagination
-- [ ] Backend pagination.
-- [ ] Frontend pagination.
+- [x] Backend pagination.
+- [x] Frontend pagination.
 
 ### Module: Sorting
-- [ ] Sort by due date.
-- [ ] Sort by priority.
-- [ ] Sort by status.
+- [x] Sort by due date.
+- [x] Sort by priority.
+- [x] Sort by status.
 
 **✅ Done When**
-- [ ] Search is responsive.
-- [ ] Large datasets are handled efficiently.
+- [x] Search is responsive.
+- [x] Large datasets are handled efficiently.
 
 ---
 

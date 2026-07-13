@@ -38,3 +38,11 @@ export interface WorkItem {
   pendingExtensionRequest: PendingExtensionRequest | null;
   isOverdue: boolean;
 }
+
+export interface PaginatedWorkItems {
+  items: WorkItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

@@ -55,10 +55,12 @@ const workItemMultipartSchema = {
 export class WorkItemsController {
   constructor(private readonly workItemsService: WorkItemsService) {}
 
-  // GET /api/work-items?status=&assigneeId=&priority= — scoped by role in the
-  // service (Manager: all, Member: assigned only); filters narrow within that scope.
+  // GET /api/work-items?status=&assigneeId=&priority=&search=&sortBy=&sortOrder=&page=&limit=
+  // — scoped by role in the service (Manager: all, Member: assigned only);
+  // filters/search/sort narrow within that scope, page/limit paginate the result.
   @ApiOperation({
-    summary: 'List work items visible to the caller, optionally filtered',
+    summary:
+      'List work items visible to the caller, optionally filtered, sorted, and paginated',
   })
   @Get()
   findAll(@Query() query: QueryWorkItemsDto, @CurrentUser() user: AuthUser) {

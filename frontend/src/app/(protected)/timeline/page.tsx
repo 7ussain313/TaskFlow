@@ -5,9 +5,11 @@ import { WorkItemCard } from '@/components/work-item-card';
 import { findTodayMarkerIndex, formatGroupHeading, groupByDate } from '@/lib/timeline';
 
 // Timeline: every visible work item placed chronologically by due date, with a
-// clear divider marking where "today" falls among them.
+// clear divider marking where "today" falls among them. Requests the max page
+// size since the timeline plots the whole workspace, not one page of it.
 export default function TimelinePage() {
-  const { data: items, isLoading, isError } = useWorkItems();
+  const { data, isLoading, isError } = useWorkItems({ limit: 200 });
+  const items = data?.items;
 
   const groups = items ? groupByDate(items) : [];
   const todayStr = new Date().toDateString();

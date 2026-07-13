@@ -9,9 +9,11 @@ function isToday(iso: string): boolean {
 }
 
 // Dashboard: headline counts across every work item visible to the current user,
-// plus quick links into the Board and Timeline views.
+// plus quick links into the Board and Timeline views. Requests the max page size
+// since these counts need to reflect the whole workspace, not one page of it.
 export default function DashboardPage() {
-  const { data: items, isLoading, isError } = useWorkItems();
+  const { data, isLoading, isError } = useWorkItems({ limit: 200 });
+  const items = data?.items;
 
   const stats = items && {
     total: items.length,

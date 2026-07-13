@@ -13,9 +13,12 @@ const COLUMNS: { status: WorkItemStatus; label: string }[] = [
   { status: 'CANCELLED', label: 'Cancelled' },
 ];
 
-// Phase board: every work item grouped into a column by its current status.
+// Phase board: every work item grouped into a column by its current status. A
+// board shows the whole workspace at once, not one page at a time, so this
+// requests the max page size rather than using the list page's pagination.
 export default function BoardPage() {
-  const { data: items, isLoading, isError } = useWorkItems();
+  const { data, isLoading, isError } = useWorkItems({ limit: 200 });
+  const items = data?.items;
 
   return (
     <div>

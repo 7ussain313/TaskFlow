@@ -10,7 +10,14 @@ import {
 } from '../common/utils/work-item-response.util';
 import { CreateWorkItemDto } from './dto/create-work-item.dto';
 import { UpdateWorkItemDto } from './dto/update-work-item.dto';
-import { QueryWorkItemsDto } from './dto/query-work-items.dto';
+import {
+  QueryWorkItemsDto,
+  SortOrder,
+  WorkItemSortBy,
+} from './dto/query-work-items.dto';
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
 
 @Injectable()
 export class WorkItemsService {
@@ -25,34 +32,89 @@ export class WorkItemsService {
     return { assignments: { some: { userId: user.id } } };
   }
 
+  // Maps the sort query params to a Prisma orderBy clause. Priority and status are
+  // Postgres enums ordered by declaration order in schema.prisma (LOW..URGENT,
+  // BACKLOG..CANCELLED), so 'asc'/'desc' on them sorts in that natural order.
+  private buildOrderBy(
+    sortBy: WorkItemSortBy = WorkItemSortBy.DUE_DATE,
+    sortOrder: SortOrder = SortOrder.ASC,
+  ): Prisma.WorkItemOrderByWithRelationInput {
+    switch (sortBy) {
+      case WorkItemSortBy.PRIORITY:
+        return { priority: sortOrder };
+      case WorkItemSortBy.STATUS:
+        return { status: sortOrder };
+      case WorkItemSortBy.DUE_DATE:
+      default:
+        return { dueDate: sortOrder };
+    }
+  }
+
   // Lists work items visible to the caller (all for Manager, own assignments for
-  // Member), optionally narrowed by status/assignee/priority. Filters are combined
-  // with the visibility scope via an explicit `AND` array — NOT object spread —
-  // because the visibility filter and an assigneeId filter both use an
-  // `assignments` key; spreading them into one object would let the later key
-  // silently overwrite the earlier one, which for a Member would drop their own
-  // scoping and leak another member's items. `AND` keeps both conditions distinct
-  // and both required.
+  // Member), optionally narrowed by status/assignee/priority/search, sorted, and
+  // paginated. Filters are combined with the visibility scope via an explicit
+  // `AND` array — NOT object spread — because the visibility filter and an
+  // assigneeId filter both use an `assignments` key; spreading them into one
+  // object would let the later key silently overwrite the earlier one, which for
+  // a Member would drop their own scoping and leak another member's items. `AND`
+  // keeps both conditions distinct and both required.
   async findAllForUser(user: AuthUser, filters: QueryWorkItemsDto = {}) {
-    const items = await this.prisma.workItem.findMany({
-      where: {
-        AND: [
-          this.visibilityFilter(user),
-          ...(filters.status ? [{ status: filters.status }] : []),
-          ...(filters.priority ? [{ priority: filters.priority }] : []),
-          ...(filters.assigneeId
-            ? [
-                {
-                  assignments: { some: { userId: filters.assigneeId } },
-                } as const,
-              ]
-            : []),
-        ],
-      },
-      include: workItemWithAssigneesInclude,
-      orderBy: { dueDate: 'asc' },
-    });
-    return items.map(toWorkItemResponse);
+    const where: Prisma.WorkItemWhereInput = {
+      AND: [
+        this.visibilityFilter(user),
+        ...(filters.status ? [{ status: filters.status }] : []),
+        ...(filters.priority ? [{ priority: filters.priority }] : []),
+        ...(filters.assigneeId
+          ? [
+              {
+                assignments: { some: { userId: filters.assigneeId } },
+              } as const,
+            ]
+          : []),
+        ...(filters.search
+          ? [
+              {
+                OR: [
+                  {
+                    title: {
+                      contains: filters.search,
+                      mode: 'insensitive' as const,
+                    },
+                  },
+                  {
+                    description: {
+                      contains: filters.search,
+                      mode: 'insensitive' as const,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
+    };
+
+    const page = filters.page ?? DEFAULT_PAGE;
+    const limit = filters.limit ?? DEFAULT_LIMIT;
+
+    const [items, total] = await Promise.all([
+      this.prisma.workItem.findMany({
+        where,
+        include: workItemWithAssigneesInclude,
+        orderBy: this.buildOrderBy(filters.sortBy, filters.sortOrder),
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.workItem.count({ where }),
+    ]);
+
+    return {
+      items: items.map(toWorkItemResponse),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   // Lists work items the given user is personally assigned to — the "Assigned to me"

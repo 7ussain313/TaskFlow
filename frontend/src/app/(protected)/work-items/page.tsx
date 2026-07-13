@@ -9,12 +9,31 @@ import { PriorityBadge } from '@/components/priority-badge';
 import { OverdueBadge } from '@/components/overdue-badge';
 import { WorkItemFiltersBar } from '@/components/work-item-filters';
 
+const PAGE_SIZE = 5;
+
 // List of every work item visible to the current user (API-scoped by role),
-// with Manager-facing filters by phase, assignee, and priority.
+// with Manager-facing filters by phase, assignee, and priority, plus search,
+// sorting, and pagination.
 export default function WorkItemsPage() {
   const { user } = useAuth();
-  const [filters, setFilters] = useState<WorkItemFilters>({});
-  const { data: items, isLoading, isError } = useWorkItems(filters);
+  const [filters, setFilters] = useState<WorkItemFilters>({ limit: PAGE_SIZE, page: 1 });
+  const { data, isLoading, isError } = useWorkItems(filters);
+  const items = data?.items;
+
+  // Any change from the filter bar (status/priority/assignee/search/sort) jumps
+  // back to page 1 — a filter narrowing the result set could otherwise land the
+  // user on a page number that no longer exists.
+  function handleFiltersChange(next: WorkItemFilters) {
+    setFilters({ ...next, page: 1 });
+  }
+
+  function goToPage(page: number) {
+    setFilters((prev) => ({ ...prev, page }));
+  }
+
+  const hasFilters = Boolean(
+    filters.status || filters.assigneeId || filters.priority || filters.search,
+  );
 
   return (
     <div>
@@ -33,7 +52,7 @@ export default function WorkItemsPage() {
       <div className="mt-4">
         <WorkItemFiltersBar
           filters={filters}
-          onChange={setFilters}
+          onChange={handleFiltersChange}
           showAssigneeFilter={user?.role === 'MANAGER'}
         />
       </div>
@@ -48,7 +67,7 @@ export default function WorkItemsPage() {
 
       {items && items.length === 0 && (
         <p className="mt-6 text-sm text-zinc-500">
-          {Object.keys(filters).length > 0
+          {hasFilters
             ? 'No work items match these filters.'
             : user?.role === 'MANAGER'
               ? 'No work items yet. Create the first one above.'
@@ -79,6 +98,30 @@ export default function WorkItemsPage() {
             </li>
           ))}
         </ul>
+      )}
+
+      {data && data.totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-between text-sm">
+          <button
+            type="button"
+            disabled={data.page <= 1}
+            onClick={() => goToPage(data.page - 1)}
+            className="rounded border border-black/15 px-3 py-1.5 disabled:opacity-40 dark:border-white/20"
+          >
+            ← Previous
+          </button>
+          <span className="text-zinc-500">
+            Page {data.page} of {data.totalPages} · {data.total} item{data.total === 1 ? '' : 's'}
+          </span>
+          <button
+            type="button"
+            disabled={data.page >= data.totalPages}
+            onClick={() => goToPage(data.page + 1)}
+            className="rounded border border-black/15 px-3 py-1.5 disabled:opacity-40 dark:border-white/20"
+          >
+            Next →
+          </button>
+        </div>
       )}
     </div>
   );

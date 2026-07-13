@@ -2,12 +2,20 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
-import type { Priority, WorkItem, WorkItemStatus } from '@/types/work-item';
+import type { PaginatedWorkItems, Priority, WorkItem, WorkItemStatus } from '@/types/work-item';
+
+export type WorkItemSortBy = 'dueDate' | 'priority' | 'status';
+export type SortOrder = 'asc' | 'desc';
 
 export interface WorkItemFilters {
   status?: WorkItemStatus;
   assigneeId?: string;
   priority?: Priority;
+  search?: string;
+  sortBy?: WorkItemSortBy;
+  sortOrder?: SortOrder;
+  page?: number;
+  limit?: number;
 }
 
 export interface WorkItemFormInput {
@@ -31,16 +39,19 @@ function toFormData(input: WorkItemFormInput): FormData {
   return formData;
 }
 
-// Fetches every work item visible to the current user (scoped server-side by role),
-// optionally narrowed by status/assignee/priority (filters are applied on top of
-// that scope server-side, never in place of it). Polls in the background so the
-// Board/Timeline reflect another user's changes without a manual refresh, on top
-// of the immediate refetch every mutation already triggers via cache invalidation.
+// Fetches a page of work items visible to the current user (scoped server-side by
+// role), optionally narrowed by status/assignee/priority/search and sorted
+// (filters are applied on top of that scope server-side, never in place of it).
+// Polls in the background so the Board/Timeline reflect another user's changes
+// without a manual refresh, on top of the immediate refetch every mutation
+// already triggers via cache invalidation.
 export function useWorkItems(filters: WorkItemFilters = {}) {
   return useQuery({
     queryKey: ['work-items', filters],
     queryFn: async () => {
-      const { data } = await apiClient.get<WorkItem[]>('/work-items', { params: filters });
+      const { data } = await apiClient.get<PaginatedWorkItems>('/work-items', {
+        params: filters,
+      });
       return data;
     },
     refetchInterval: 15000,

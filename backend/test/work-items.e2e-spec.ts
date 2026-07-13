@@ -17,6 +17,11 @@ interface WorkItemResponseBody {
   assignees: { id: string }[];
 }
 
+interface PaginatedWorkItemsResponseBody {
+  items: WorkItemResponseBody[];
+  total: number;
+}
+
 // Integration test covering the assessment's required "login -> create -> assign"
 // flow end to end against the real database, plus the explicit 401/403/400
 // security cases called out in the brief. Uses the seeded Manager/Member accounts
@@ -102,7 +107,7 @@ describe('Work items (e2e)', () => {
       .get('/work-items')
       .set('Authorization', `Bearer ${aliceToken}`)
       .expect(200);
-    const aliceItems = aliceList.body as WorkItemResponseBody[];
+    const aliceItems = (aliceList.body as PaginatedWorkItemsResponseBody).items;
     expect(aliceItems.some((item) => item.id === createdItemId)).toBe(true);
   }, 45000); // three sequential requests against Neon; give it real headroom.
 
