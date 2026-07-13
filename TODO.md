@@ -36,23 +36,23 @@
 ## 📌 Phase 1 – Project Setup
 
 ### Module: Backend
-- [ ] Create NestJS project.
-- [ ] Configure PostgreSQL.
-- [ ] Configure Prisma.
-- [ ] Configure environment variables.
-- [ ] Enable ValidationPipe.
-- [ ] Configure CORS.
+- [x] Create NestJS project.
+- [x] Configure PostgreSQL.
+- [x] Configure Prisma.
+- [x] Configure environment variables.
+- [x] Enable ValidationPipe.
+- [x] Configure CORS.
 - [ ] Configure Swagger (optional if time allows).
 
 ### Module: Frontend
-- [ ] Create Next.js project.
-- [ ] Configure Tailwind CSS.
-- [ ] Configure React Query.
-- [ ] Configure Axios.
-- [ ] Configure React Hook Form.
-- [ ] Configure Zod.
-- [ ] Create layout.
-- [ ] Configure protected routing.
+- [x] Create Next.js project.
+- [x] Configure Tailwind CSS.
+- [x] Configure React Query.
+- [x] Configure Axios.
+- [x] Configure React Hook Form.
+- [x] Configure Zod.
+- [x] Create layout.
+- [x] Configure protected routing.
 
 ### Module: Repository
 - [x] Create GitHub repository.
@@ -61,8 +61,8 @@
 - [x] Initial commit.
 
 **✅ Done When**
-- [ ] Backend and frontend both run successfully.
-- [ ] Database connection works.
+- [x] Backend and frontend both run successfully.
+- [x] Database connection works.
 - [x] Git repository is ready.
 
 ---
