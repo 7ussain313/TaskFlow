@@ -385,19 +385,19 @@
 ## 📌 Bonus Phase 13 – CI/CD (GitHub Actions)
 
 ### Module: Continuous Integration
-- [ ] Create GitHub Actions workflow.
-- [ ] Install dependencies.
-- [ ] Run backend tests.
-- [ ] Run frontend tests.
-- [ ] Verify project builds successfully.
+- [x] Create GitHub Actions workflow.
+- [x] Install dependencies.
+- [x] Run backend tests.
+- [x] Run frontend tests.
+- [x] Verify project builds successfully.
 
 ### Module: Code Quality
-- [ ] Run ESLint.
-- [ ] Verify formatting.
+- [x] Run ESLint.
+- [x] Verify formatting.
 
 **✅ Done When**
-- [ ] Every push automatically validates the project.
-- [ ] Workflow passes successfully.
+- [x] Every push automatically validates the project.
+- [x] Workflow passes successfully.
 
 ---
 
