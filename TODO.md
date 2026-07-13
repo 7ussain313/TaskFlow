@@ -362,23 +362,23 @@
 ## 📌 Bonus Phase 12 – Docker Support
 
 ### Module: Backend
-- [ ] Create Dockerfile.
-- [ ] Configure production build.
+- [x] Create Dockerfile.
+- [x] Configure production build.
 
 ### Module: Frontend
-- [ ] Create Dockerfile.
-- [ ] Configure production build.
+- [x] Create Dockerfile.
+- [x] Configure production build.
 
 ### Module: Docker Compose
-- [ ] Add PostgreSQL service.
-- [ ] Add Backend service.
-- [ ] Add Frontend service.
-- [ ] Configure environment variables.
-- [ ] Configure persistent database volume.
+- [x] Add PostgreSQL service.
+- [x] Add Backend service.
+- [x] Add Frontend service.
+- [x] Configure environment variables.
+- [x] Configure persistent database volume.
 
 **✅ Done When**
-- [ ] Entire application starts using one command.
-- [ ] Fresh environment works correctly.
+- [x] Entire application starts using one command.
+- [x] Fresh environment works correctly.
 
 ---
 
