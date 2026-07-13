@@ -297,40 +297,40 @@
 ## 📌 Phase 10 – Final Review & Submission
 
 ### Module: Documentation
-- [ ] Update README.
-- [ ] Add setup instructions.
-- [ ] Add seed instructions.
-- [ ] Add test commands.
-- [ ] Add assumptions.
-- [ ] Add trade-offs.
-- [ ] Create TEST_PLAN.md.
+- [x] Update README.
+- [x] Add setup instructions.
+- [x] Add seed instructions.
+- [x] Add test commands.
+- [x] Add assumptions.
+- [x] Add trade-offs.
+- [x] Create TEST_PLAN.md.
 
 ### Module: Final QA — Review Checklist
-- [ ] Fresh clone works.
-- [ ] npm install works.
-- [ ] Database migration works.
-- [ ] Seed command works.
-- [ ] Login works.
-- [ ] JWT works.
-- [ ] Manager permissions work.
-- [ ] Member permissions work.
-- [ ] CRUD works.
-- [ ] Assignment works.
-- [ ] Workflow works.
-- [ ] Activity timeline works.
-- [ ] Overdue logic works.
-- [ ] Image upload works.
-- [ ] Filters work.
-- [ ] Loading states work.
-- [ ] Empty states work.
-- [ ] Error states work.
-- [ ] Tests pass.
-- [ ] No console errors.
-- [ ] .env.example is complete.
-- [ ] Repository is public.
-- [ ] Commit history is clean.
+- [x] Fresh clone works. <!-- literally re-cloned from https://github.com/7ussain313/TaskFlow.git into a scratch dir and ran the README verbatim -->
+- [x] npm install works. <!-- both apps, clean clone -->
+- [x] Database migration works. <!-- clean clone -->
+- [x] Seed command works. <!-- clean clone -->
+- [x] Login works. <!-- clean clone browser smoke test -->
+- [x] JWT works.
+- [x] Manager permissions work.
+- [x] Member permissions work.
+- [x] CRUD works.
+- [x] Assignment works.
+- [x] Workflow works.
+- [x] Activity timeline works.
+- [x] Overdue logic works.
+- [x] Image upload works.
+- [x] Filters work.
+- [x] Loading states work.
+- [x] Empty states work. <!-- verified live: combined filters with no matches renders "No work items match these filters." -->
+- [x] Error states work.
+- [x] Tests pass. <!-- re-run fresh in the clean clone too, not just the working copy: backend 20+10, frontend 14, all green -->
+- [x] No console errors. <!-- zero across every Playwright run this phase, including the clean-clone smoke test -->
+- [x] .env.example is complete. <!-- root + backend + frontend all reviewed; caught and fixed frontend's was gitignored and never actually committed -->
+- [x] Repository is public. <!-- confirmed via GitHub API: private: false -->
+- [x] Commit history is clean. <!-- one commit per phase, conventional prefixes, real incremental history -->
 
 **✅ Done When**
-- [ ] The project can be cloned and run by following only the README.
-- [ ] Every assessment requirement has been implemented or documented with a justified trade-off.
-- [ ] The submission is ready to send.
+- [x] The project can be cloned and run by following only the README. <!-- verified for real, see above -->
+- [x] Every assessment requirement has been implemented or documented with a justified trade-off. <!-- see README "Assumptions & tradeoffs" and "What I'd improve" -->
+- [x] The submission is ready to send.
