@@ -1,3 +1,4 @@
+// Placeholder /login screen; the real form is built in Phase 3.
 export default function LoginPage() {
   return (
     <div className="flex flex-1 items-center justify-center">

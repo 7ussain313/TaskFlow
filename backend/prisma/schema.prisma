@@ -1,5 +1,4 @@
-// Prisma schema — see SYSTEM_DESIGN.md for the domain model this mirrors.
-// Models are added in Phase 2; Phase 1 only wires up the datasource/client.
+// Prisma schema — mirrors the domain model documented in SYSTEM_DESIGN.md.
 
 generator client {
   provider = "prisma-client-js"
@@ -8,4 +7,126 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MANAGER
+  MEMBER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum WorkItemStatus {
+  BACKLOG
+  ASSIGNED
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  CANCELLED
+}
+
+enum ExtensionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(MEMBER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Work items this user created (Managers only, enforced in the service layer).
+  createdWorkItems    WorkItem[]         @relation("WorkItemCreatedBy")
+  // Work items this user is assigned to, through the Assignment join table.
+  assignments         Assignment[]
+  // Every mutation this user performed, across all work items.
+  activityLogs        ActivityLog[]
+  // Extension requests this user filed as an assignee.
+  extensionsRequested ExtensionRequest[] @relation("ExtensionRequestedBy")
+  // Extension requests this user approved/rejected as a Manager.
+  extensionsDecided   ExtensionRequest[] @relation("ExtensionDecidedBy")
+
+  @@map("users")
+}
+
+model WorkItem {
+  id          String         @id @default(uuid())
+  title       String
+  description String?
+  priority    Priority       @default(MEDIUM)
+  category    String
+  dueDate     DateTime
+  status      WorkItemStatus @default(BACKLOG)
+  imagePath   String?
+  createdById String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // The Manager who created this item.
+  createdBy User @relation("WorkItemCreatedBy", fields: [createdById], references: [id])
+
+  assignments       Assignment[]
+  activityLogs      ActivityLog[]
+  extensionRequests ExtensionRequest[]
+
+  @@index([status])
+  @@index([dueDate])
+  @@map("work_items")
+}
+
+model Assignment {
+  id         String   @id @default(uuid())
+  workItemId String
+  userId     String
+  assignedAt DateTime @default(now())
+
+  workItem WorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // A member can only be assigned to a given work item once.
+  @@unique([workItemId, userId])
+  @@map("assignments")
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  workItemId String
+  actorId    String
+  action     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  workItem WorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+  actor    User     @relation(fields: [actorId], references: [id])
+
+  @@index([workItemId])
+  @@map("activity_logs")
+}
+
+model ExtensionRequest {
+  id              String          @id @default(uuid())
+  workItemId      String
+  requestedById   String
+  proposedDueDate DateTime
+  status          ExtensionStatus @default(PENDING)
+  decidedById     String?
+  createdAt       DateTime        @default(now())
+  decidedAt       DateTime?
+
+  workItem    WorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+  requestedBy User     @relation("ExtensionRequestedBy", fields: [requestedById], references: [id])
+  decidedBy   User?    @relation("ExtensionDecidedBy", fields: [decidedById], references: [id])
+
+  @@index([workItemId])
+  @@map("extension_requests")
 }

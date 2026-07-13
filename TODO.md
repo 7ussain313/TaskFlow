@@ -70,29 +70,29 @@
 ## 📌 Phase 2 – Database Design
 
 ### Module: Prisma Models
-- [ ] User
-- [ ] WorkItem
-- [ ] Assignment
-- [ ] ActivityLog
-- [ ] ExtensionRequest
+- [x] User
+- [x] WorkItem
+- [x] Assignment
+- [x] ActivityLog
+- [x] ExtensionRequest
 
 ### Module: Relationships
-- [ ] User ↔ Assignments
-- [ ] WorkItem ↔ Assignments
-- [ ] WorkItem ↔ ActivityLog
-- [ ] WorkItem ↔ ExtensionRequest
+- [x] User ↔ Assignments
+- [x] WorkItem ↔ Assignments
+- [x] WorkItem ↔ ActivityLog
+- [x] WorkItem ↔ ExtensionRequest
 
 ### Module: Database
-- [ ] Create migrations.
-- [ ] Seed database.
-- [ ] Seed Manager user.
-- [ ] Seed Member users.
-- [ ] Seed work items in every workflow state.
+- [x] Create migrations.
+- [x] Seed database.
+- [x] Seed Manager user.
+- [x] Seed Member users.
+- [x] Seed work items in every workflow state.
 
 **✅ Done When**
-- [ ] Database migrations succeed.
-- [ ] Seed runs successfully.
-- [ ] Dashboard has meaningful data.
+- [x] Database migrations succeed.
+- [x] Seed runs successfully.
+- [x] Dashboard has meaningful data.
 
 ---
 

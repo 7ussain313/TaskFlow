@@ -22,10 +22,12 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+// Holds the logged-in user in memory + localStorage and exposes login/logout to the app.
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // On first render, check localStorage for a token/user from a previous session.
   useEffect(() => {
     const storedToken = window.localStorage.getItem(AUTH_TOKEN_KEY);
     const storedUser = window.localStorage.getItem(AUTH_USER_KEY);
@@ -38,12 +40,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  // Persists the token/user after a successful API login and updates state.
   const login = useCallback((token: string, user: AuthUser) => {
     window.localStorage.setItem(AUTH_TOKEN_KEY, token);
     window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
     setUser(user);
   }, []);
 
+  // Clears the stored session so the user is treated as signed out.
   const logout = useCallback(() => {
     window.localStorage.removeItem(AUTH_TOKEN_KEY);
     window.localStorage.removeItem(AUTH_USER_KEY);
@@ -58,6 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Hook other components use to read the current user / call login() and logout().
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {

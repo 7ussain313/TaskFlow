@@ -37,6 +37,8 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 cd backend
 npm install
 cp .env.example .env      # then set DATABASE_URL (and JWT_SECRET) in .env
+npm run db:migrate        # creates the schema (users, work_items, etc.) in your DB
+npm run db:seed           # wipes and repopulates demo data (see accounts below)
 npm run start:dev         # http://localhost:3001/api
 ```
 
@@ -48,11 +50,24 @@ cp .env.example .env.local  # defaults already point at the backend above
 npm run dev                 # http://localhost:3000
 ```
 
-Database schema, migrations, and seed data are added in Phase 2 — instructions for
-`prisma migrate` and seeding will land here once that's in place.
+Other useful backend scripts: `npm run db:studio` opens Prisma Studio (a GUI to
+browse/edit the database), and `npm run db:seed` can be re-run any time to reset the
+demo data back to its starting state.
 
 ## Seed / demo accounts
-_To be added once the database seed script is written (Phase 2)._
+All seeded accounts share the password `Password123!`.
+
+| Role | Email | Name |
+|---|---|---|
+| Manager | `manager@taskflow.dev` | Morgan Reyes |
+| Member | `alice@taskflow.dev` | Alice Chen |
+| Member | `bob@taskflow.dev` | Bob Nguyen |
+| Member | `carol@taskflow.dev` | Carol Diaz |
+
+The seed also creates 8 work items spanning every workflow status (Backlog, Assigned,
+In Progress, In Review, Done, Cancelled), two of which are overdue, plus one pending
+due-date extension request — so the Timeline/Board and dashboard have meaningful data
+on first load.
 
 ## Running tests
 _To be added once the test suites exist (Phase 9)._

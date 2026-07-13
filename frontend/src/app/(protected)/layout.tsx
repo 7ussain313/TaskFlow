@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 
+// Wraps every page under this route group: redirects to /login if not signed in,
+// otherwise renders the shared nav header + the page content.
 export default function ProtectedLayout({
   children,
 }: {

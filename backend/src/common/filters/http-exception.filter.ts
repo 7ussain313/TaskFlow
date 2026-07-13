@@ -12,6 +12,8 @@ import { Response } from 'express';
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
+  // Catches every thrown error app-wide and reshapes it into one consistent
+  // { statusCode, message, error } JSON response instead of Nest's default format.
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

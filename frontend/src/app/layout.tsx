@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: "Track work items from Backlog to Done.",
 };
 
+// Top-level HTML shell for every page; sets fonts and mounts the global providers.
 export default function RootLayout({
   children,
 }: Readonly<{

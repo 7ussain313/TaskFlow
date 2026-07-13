@@ -1,3 +1,4 @@
+// Placeholder /dashboard screen; the real stats/overview are built in Phase 7.
 export default function DashboardPage() {
   return (
     <div>
