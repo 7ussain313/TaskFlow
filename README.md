@@ -23,7 +23,33 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 - `TEST_PLAN.md` — what's tested and how to run it (added in the testing phase)
 
 ## Setup instructions
-_To be completed once the backend and frontend projects are scaffolded (Phase 1)._
+
+### Prerequisites
+- Node.js 20+ and npm
+- A PostgreSQL database — either:
+  - **Cloud (recommended, no local install):** a free [Neon](https://neon.tech) or
+    [Supabase](https://supabase.com) Postgres project, or
+  - **Local via Docker:** `docker compose up -d` from the repo root starts Postgres
+    on `localhost:5432` (user/pass/db: `taskflow`).
+
+### Backend
+```bash
+cd backend
+npm install
+cp .env.example .env      # then set DATABASE_URL (and JWT_SECRET) in .env
+npm run start:dev         # http://localhost:3001/api
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+cp .env.example .env.local  # defaults already point at the backend above
+npm run dev                 # http://localhost:3000
+```
+
+Database schema, migrations, and seed data are added in Phase 2 — instructions for
+`prisma migrate` and seeding will land here once that's in place.
 
 ## Seed / demo accounts
 _To be added once the database seed script is written (Phase 2)._
