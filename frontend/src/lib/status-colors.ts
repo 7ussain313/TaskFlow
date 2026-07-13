@@ -14,6 +14,18 @@ const STATUS_CLASSES: Record<WorkItemStatus, string> = {
   CANCELLED: 'bg-status-cancelled/15 text-status-cancelled',
 };
 
+// Solid (not tinted) version of the same per-status color, for the small dot
+// indicator inside StatusBadge — reuses the exact same hue so the dot and the
+// pill's text color never drift apart.
+const STATUS_DOT_CLASSES: Record<WorkItemStatus, string> = {
+  BACKLOG: 'bg-status-backlog',
+  ASSIGNED: 'bg-status-assigned',
+  IN_PROGRESS: 'bg-status-in-progress',
+  IN_REVIEW: 'bg-status-in-review',
+  DONE: 'bg-status-done',
+  CANCELLED: 'bg-status-cancelled',
+};
+
 // Priority rides the sequential ramp (light->dark = low->high severity); URGENT
 // breaks into the reserved "critical" red to grab attention, same token as Overdue.
 const PRIORITY_CLASSES: Record<Priority, string> = {
@@ -25,6 +37,10 @@ const PRIORITY_CLASSES: Record<Priority, string> = {
 
 export function statusColorClasses(status: WorkItemStatus): string {
   return STATUS_CLASSES[status];
+}
+
+export function statusDotClasses(status: WorkItemStatus): string {
+  return STATUS_DOT_CLASSES[status];
 }
 
 export function priorityColorClasses(priority: Priority): string {

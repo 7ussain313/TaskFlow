@@ -7,6 +7,7 @@ import { useUpdateWorkItem, useWorkItem } from '@/hooks/use-work-items';
 import { WorkItemForm } from '@/components/work-item-form';
 import { getImageUrl } from '@/lib/image-url';
 import { toDatetimeLocalValue } from '@/lib/datetime-local';
+import { Skeleton } from '@/components/skeleton';
 
 // Manager-only edit form, pre-filled from the existing work item.
 export default function EditWorkItemPage({
@@ -31,12 +32,17 @@ export default function EditWorkItemPage({
   }
 
   if (isLoading || !item) {
-    return <p className="text-sm text-zinc-500">Loading…</p>;
+    return (
+      <div className="max-w-lg space-y-3">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-64" />
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1 className="text-lg font-semibold">Edit Work Item</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Edit Work Item</h1>
       <div className="mt-6">
         <WorkItemForm
           submitLabel="Save changes"

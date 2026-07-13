@@ -8,6 +8,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
 import { OverdueBadge } from '@/components/overdue-badge';
 import { WorkItemFiltersBar } from '@/components/work-item-filters';
+import { Skeleton } from '@/components/skeleton';
 
 const PAGE_SIZE = 5;
 
@@ -38,18 +39,21 @@ export default function WorkItemsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Work Items</h1>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Work Items</h1>
+          <p className="mt-1 text-sm text-zinc-500">Every item you can see, searchable and filterable.</p>
+        </div>
         {user?.role === 'MANAGER' && (
           <Link
             href="/work-items/new"
-            className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="rounded-lg bg-gradient-to-br from-accent to-accent-hover px-4 py-2 text-sm font-medium text-white shadow-md shadow-accent/25 transition-all hover:shadow-lg hover:shadow-accent/30 active:scale-[.99]"
           >
-            New Work Item
+            + New Work Item
           </Link>
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-5 rounded-xl border border-border-subtle bg-surface p-3 shadow-sm">
         <WorkItemFiltersBar
           filters={filters}
           onChange={handleFiltersChange}
@@ -57,39 +61,50 @@ export default function WorkItemsPage() {
         />
       </div>
 
-      {isLoading && <p className="mt-6 text-sm text-zinc-500">Loading work items…</p>}
-
       {isError && (
-        <p className="mt-6 text-sm text-red-600">
+        <p className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40">
           Couldn&apos;t load work items. Please try again.
         </p>
       )}
 
+      {isLoading && (
+        <div className="mt-6 space-y-2">
+          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+            <Skeleton key={i} className="h-16" />
+          ))}
+        </div>
+      )}
+
       {items && items.length === 0 && (
-        <p className="mt-6 text-sm text-zinc-500">
-          {hasFilters
-            ? 'No work items match these filters.'
-            : user?.role === 'MANAGER'
-              ? 'No work items yet. Create the first one above.'
-              : 'Nothing assigned to you yet.'}
-        </p>
+        <div className="mt-6 flex flex-col items-center rounded-xl border border-dashed border-border-strong py-16 text-center">
+          <p className="text-sm font-medium">
+            {hasFilters ? 'No matches' : 'Nothing here yet'}
+          </p>
+          <p className="mt-1 text-sm text-zinc-500">
+            {hasFilters
+              ? 'No work items match these filters.'
+              : user?.role === 'MANAGER'
+                ? 'Create the first one above.'
+                : 'Nothing assigned to you yet.'}
+          </p>
+        </div>
       )}
 
       {items && items.length > 0 && (
-        <ul className="mt-6 divide-y divide-black/10 dark:divide-white/15">
+        <ul className="mt-6 space-y-2">
           {items.map((item) => (
             <li key={item.id}>
               <Link
                 href={`/work-items/${item.id}`}
-                className="flex items-center justify-between gap-4 py-3 transition-colors hover:bg-black/[.02] dark:hover:bg-white/[.03]"
+                className="flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-4 py-3.5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md"
               >
-                <div>
-                  <p className="font-medium">{item.title}</p>
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{item.title}</p>
                   <p className="text-xs text-zinc-500">
                     {item.category} · Due {new Date(item.dueDate).toLocaleString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   {item.isOverdue && <OverdueBadge />}
                   <PriorityBadge priority={item.priority} />
                   <StatusBadge status={item.status} />
@@ -106,7 +121,7 @@ export default function WorkItemsPage() {
             type="button"
             disabled={data.page <= 1}
             onClick={() => goToPage(data.page - 1)}
-            className="rounded border border-black/15 px-3 py-1.5 disabled:opacity-40 dark:border-white/20"
+            className="rounded-lg border border-border-subtle px-3 py-1.5 font-medium transition-colors hover:border-border-strong hover:bg-surface-hover disabled:opacity-40 disabled:hover:bg-transparent"
           >
             ← Previous
           </button>
@@ -117,7 +132,7 @@ export default function WorkItemsPage() {
             type="button"
             disabled={data.page >= data.totalPages}
             onClick={() => goToPage(data.page + 1)}
-            className="rounded border border-black/15 px-3 py-1.5 disabled:opacity-40 dark:border-white/20"
+            className="rounded-lg border border-border-subtle px-3 py-1.5 font-medium transition-colors hover:border-border-strong hover:bg-surface-hover disabled:opacity-40 disabled:hover:bg-transparent"
           >
             Next →
           </button>

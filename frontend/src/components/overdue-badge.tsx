@@ -4,7 +4,10 @@ import { OVERDUE_CLASSES } from '@/lib/status-colors';
 // status/priority pills since it's the one thing on a card that should jump out.
 export function OverdueBadge() {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${OVERDUE_CLASSES}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm shadow-status-overdue/30 ${OVERDUE_CLASSES}`}
+    >
+      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
       Overdue
     </span>
   );

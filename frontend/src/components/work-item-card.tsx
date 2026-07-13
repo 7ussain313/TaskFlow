@@ -23,24 +23,37 @@ export const WorkItemCard = memo(function WorkItemCard({
   return (
     <Link
       href={`/work-items/${item.id}`}
-      className="block rounded border border-black/10 bg-background p-3 text-sm transition-colors hover:border-black/20 dark:border-white/15 dark:hover:border-white/30"
+      className="group block rounded-xl border border-border-subtle bg-surface p-3.5 text-sm shadow-sm transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md"
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="font-medium">{item.title}</p>
+        <p className="font-medium transition-colors group-hover:text-accent">{item.title}</p>
         {item.isOverdue && <OverdueBadge />}
       </div>
       <p className="mt-1 text-xs text-zinc-500">
         {item.category} · Due {new Date(item.dueDate).toLocaleString()}
       </p>
-      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
         {showStatus && <StatusBadge status={item.status} />}
         <PriorityBadge priority={item.priority} />
-        {item.assignees.length > 0 && (
-          <span className="text-xs text-zinc-500">
-            {item.assignees.map((a) => a.name).join(', ')}
-          </span>
-        )}
       </div>
+      {item.assignees.length > 0 && (
+        <div className="mt-2.5 flex items-center -space-x-1.5">
+          {item.assignees.slice(0, 4).map((a) => (
+            <span
+              key={a.id}
+              title={a.name}
+              className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-surface bg-accent-soft text-[10px] font-semibold text-accent"
+            >
+              {a.name.charAt(0).toUpperCase()}
+            </span>
+          ))}
+          {item.assignees.length > 4 && (
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-surface bg-surface-hover text-[10px] font-semibold text-zinc-500">
+              +{item.assignees.length - 4}
+            </span>
+          )}
+        </div>
+      )}
     </Link>
   );
 });

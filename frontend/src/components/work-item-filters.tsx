@@ -67,7 +67,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder="Search title or description…"
-        className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+        className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
       />
 
       <select
@@ -76,7 +76,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
         onChange={(e) =>
           onChange({ ...filters, status: (e.target.value || undefined) as WorkItemFilters['status'] })
         }
-        className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+        className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
       >
         <option value="">All phases</option>
         {STATUS_OPTIONS.map((status) => (
@@ -92,7 +92,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
         onChange={(e) =>
           onChange({ ...filters, priority: (e.target.value || undefined) as WorkItemFilters['priority'] })
         }
-        className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+        className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
       >
         <option value="">All priorities</option>
         {PRIORITY_OPTIONS.map((priority) => (
@@ -107,7 +107,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
           aria-label="Filter by assignee"
           value={filters.assigneeId ?? ''}
           onChange={(e) => onChange({ ...filters, assigneeId: e.target.value || undefined })}
-          className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+          className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
         >
           <option value="">All assignees</option>
           {members?.map((member) => (
@@ -124,7 +124,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
         onChange={(e) =>
           onChange({ ...filters, sortBy: e.target.value as WorkItemFilters['sortBy'] })
         }
-        className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+        className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
       >
         {SORT_BY_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -139,7 +139,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
           onChange({ ...filters, sortOrder: filters.sortOrder === 'desc' ? 'asc' : 'desc' })
         }
         title="Toggle sort direction"
-        className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
+        className="rounded-lg border border-border-subtle bg-transparent px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-accent"
       >
         {filters.sortOrder === 'desc' ? '↓ Desc' : '↑ Asc'}
       </button>
@@ -157,7 +157,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
               search: undefined,
             });
           }}
-          className="text-sm text-zinc-500 underline"
+          className="rounded-lg px-2 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent-soft"
         >
           Clear filters
         </button>

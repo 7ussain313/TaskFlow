@@ -25,7 +25,7 @@ export default function NewWorkItemPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold">New Work Item</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">New Work Item</h1>
       <div className="mt-6">
         <WorkItemForm
           submitLabel="Create work item"

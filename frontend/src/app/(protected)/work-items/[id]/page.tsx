@@ -13,6 +13,7 @@ import { AssigneesEditor } from '@/components/assignees-editor';
 import { WorkflowActions } from '@/components/workflow-actions';
 import { ExtensionRequestPanel } from '@/components/extension-request-panel';
 import { ActivityLog } from '@/components/activity-log';
+import { Skeleton } from '@/components/skeleton';
 import { getImageUrl } from '@/lib/image-url';
 
 // Detail view of a single work item: read-only fields, Manager-only edit/delete/
@@ -30,11 +31,21 @@ export default function WorkItemDetailPage({
   const deleteWorkItem = useDeleteWorkItem();
 
   if (isLoading) {
-    return <p className="text-sm text-zinc-500">Loading…</p>;
+    return (
+      <div className="max-w-2xl space-y-4">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-32" />
+      </div>
+    );
   }
 
   if (isError || !item) {
-    return <p className="text-sm text-red-600">Work item not found.</p>;
+    return (
+      <div className="rounded-xl border border-dashed border-border-strong py-16 text-center text-sm text-zinc-500">
+        Work item not found.
+      </div>
+    );
   }
 
   const imageUrl = getImageUrl(item.imagePath);
@@ -42,61 +53,64 @@ export default function WorkItemDetailPage({
   const isAssignee = item.assignees.some((a) => a.id === user?.id);
 
   return (
-    <div className="max-w-2xl">
-      <Link href="/work-items" className="text-sm text-zinc-500 underline">
+    <div className="max-w-2xl animate-fade-in">
+      <Link
+        href="/work-items"
+        className="inline-flex items-center gap-1 text-sm text-zinc-500 transition-colors hover:text-foreground"
+      >
         ← Back to work items
       </Link>
 
-      <div className="mt-4 flex items-start justify-between">
-        <h1 className="text-xl font-semibold">{item.title}</h1>
-        <div className="flex items-center gap-2">
-          {item.isOverdue && <OverdueBadge />}
-          <PriorityBadge priority={item.priority} />
-          <StatusBadge status={item.status} />
+      <div className="mt-4 rounded-2xl border border-border-subtle bg-surface p-6 shadow-sm">
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-xl font-semibold tracking-tight">{item.title}</h1>
+          <div className="flex shrink-0 items-center gap-2">
+            {item.isOverdue && <OverdueBadge />}
+            <PriorityBadge priority={item.priority} />
+            <StatusBadge status={item.status} />
+          </div>
         </div>
-      </div>
 
-      <dl className="mt-4 space-y-2 text-sm">
-        <div className="flex gap-2">
-          <dt className="w-28 text-zinc-500">Category</dt>
-          <dd>{item.category}</dd>
-        </div>
-        <div className="flex gap-2">
-          <dt className="w-28 text-zinc-500">Due</dt>
-          <dd>{new Date(item.dueDate).toLocaleString()}</dd>
-        </div>
-        <div className="flex gap-2">
-          <dt className="w-28 text-zinc-500">Assignees</dt>
-          <dd>
-            {item.assignees.length > 0
-              ? item.assignees.map((a) => a.name).join(', ')
-              : 'Unassigned'}
-          </dd>
-        </div>
-      </dl>
+        <dl className="mt-5 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+          <div className="rounded-lg bg-surface-hover px-3 py-2">
+            <dt className="text-xs text-zinc-500">Category</dt>
+            <dd className="mt-0.5 font-medium">{item.category}</dd>
+          </div>
+          <div className="rounded-lg bg-surface-hover px-3 py-2">
+            <dt className="text-xs text-zinc-500">Due</dt>
+            <dd className="mt-0.5 font-medium">{new Date(item.dueDate).toLocaleString()}</dd>
+          </div>
+          <div className="rounded-lg bg-surface-hover px-3 py-2 sm:col-span-2">
+            <dt className="text-xs text-zinc-500">Assignees</dt>
+            <dd className="mt-0.5 font-medium">
+              {item.assignees.length > 0
+                ? item.assignees.map((a) => a.name).join(', ')
+                : 'Unassigned'}
+            </dd>
+          </div>
+        </dl>
 
-      {item.description && (
-        <p className="mt-4 whitespace-pre-wrap text-sm text-zinc-700 dark:text-zinc-300">
-          {item.description}
-        </p>
-      )}
+        {item.description && (
+          <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+            {item.description}
+          </p>
+        )}
 
-      {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt={`Attachment for ${item.title}`}
-          width={600}
-          height={400}
-          className="mt-4 h-auto w-full max-w-sm rounded border border-black/10 dark:border-white/15"
-        />
-      )}
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt={`Attachment for ${item.title}`}
+            width={600}
+            height={400}
+            className="mt-4 h-auto w-full max-w-sm rounded-xl border border-border-subtle"
+          />
+        )}
 
-      {user?.role === 'MANAGER' && (
-        <>
-          <div className="mt-6 flex gap-3">
+        {user?.role === 'MANAGER' && (
+          <div className="mt-5 flex gap-3">
             <Link
               href={`/work-items/${item.id}/edit`}
-              className="rounded border border-black/15 px-4 py-2 text-sm dark:border-white/20"
+              className="rounded-lg border border-border-subtle px-4 py-2 text-sm font-medium transition-colors hover:border-border-strong hover:bg-surface-hover"
             >
               Edit
             </Link>
@@ -107,27 +121,29 @@ export default function WorkItemDetailPage({
                 await deleteWorkItem.mutateAsync(item.id);
                 router.push('/work-items');
               }}
-              className="rounded border border-red-600 px-4 py-2 text-sm text-red-600"
+              className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/40"
             >
               Delete
             </button>
           </div>
+        )}
+      </div>
 
-          <div className="mt-6 max-w-sm rounded border border-black/10 p-4 dark:border-white/15">
-            <h2 className="text-sm font-semibold">Assignees</h2>
-            <p className="mt-1 text-xs text-zinc-500">
-              Assigning moves a Backlog item to Assigned. Removing everyone sends it
-              back to Backlog.
-            </p>
-            <div className="mt-3">
-              <AssigneesEditor
-                key={item.id}
-                workItemId={item.id}
-                currentAssigneeIds={item.assignees.map((a) => a.id)}
-              />
-            </div>
+      {user?.role === 'MANAGER' && (
+        <div className="mt-4 max-w-sm rounded-2xl border border-border-subtle bg-surface p-5 shadow-sm">
+          <h2 className="text-sm font-semibold">Assignees</h2>
+          <p className="mt-1 text-xs text-zinc-500">
+            Assigning moves a Backlog item to Assigned. Removing everyone sends it
+            back to Backlog.
+          </p>
+          <div className="mt-3">
+            <AssigneesEditor
+              key={item.id}
+              workItemId={item.id}
+              currentAssigneeIds={item.assignees.map((a) => a.id)}
+            />
           </div>
-        </>
+        </div>
       )}
 
       <WorkflowActions

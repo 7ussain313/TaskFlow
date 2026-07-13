@@ -41,56 +41,72 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-sm rounded-lg border border-black/10 p-8 dark:border-white/15"
-      >
-        <h1 className="text-xl font-semibold">Sign in to TaskFlow</h1>
+    <div className="flex flex-1 items-center justify-center px-4 py-12">
+      <div className="w-full max-w-sm animate-fade-in">
+        <div className="mb-8 flex flex-col items-center gap-3 text-center">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent-hover text-lg font-bold text-white shadow-lg shadow-accent/30">
+            T
+          </span>
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight">Sign in to TaskFlow</h1>
+            <p className="mt-1 text-sm text-zinc-500">
+              Track work items from Backlog to Done.
+            </p>
+          </div>
+        </div>
 
-        <label htmlFor="email" className="mt-6 block text-sm font-medium">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          {...register('email')}
-          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
-          placeholder="manager@taskflow.dev"
-        />
-        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
-
-        <label htmlFor="password" className="mt-4 block text-sm font-medium">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          {...register('password')}
-          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
-          placeholder="••••••••"
-        />
-        {errors.password && (
-          <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
-        )}
-
-        {serverError && <p className="mt-4 text-sm text-red-600">{serverError}</p>}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="mt-6 w-full rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="rounded-2xl border border-border-subtle bg-surface p-8 shadow-xl shadow-black/[.03] dark:shadow-black/20"
         >
-          {isSubmitting ? 'Signing in…' : 'Sign in'}
-        </button>
+          <label htmlFor="email" className="block text-sm font-medium">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            {...register('email')}
+            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
+            placeholder="manager@taskflow.dev"
+          />
+          {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
 
-        <p className="mt-4 text-center text-sm text-zinc-500">
-          No account?{' '}
-          <Link href="/register" className="underline">
-            Register
-          </Link>
-        </p>
-      </form>
+          <label htmlFor="password" className="mt-4 block text-sm font-medium">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            {...register('password')}
+            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
+            placeholder="••••••••"
+          />
+          {errors.password && (
+            <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+          )}
+
+          {serverError && (
+            <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40">
+              {serverError}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-6 w-full rounded-lg bg-gradient-to-br from-accent to-accent-hover px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-accent/25 transition-all hover:shadow-lg hover:shadow-accent/30 active:scale-[.99] disabled:opacity-50 disabled:shadow-none"
+          >
+            {isSubmitting ? 'Signing in…' : 'Sign in'}
+          </button>
+
+          <p className="mt-5 text-center text-sm text-zinc-500">
+            No account?{' '}
+            <Link href="/register" className="font-medium text-accent hover:underline">
+              Register
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

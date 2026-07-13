@@ -23,6 +23,25 @@ interface WorkflowActionsProps {
 const CANCELLABLE_STATUSES: WorkItemStatus[] = ['BACKLOG', 'ASSIGNED', 'IN_PROGRESS', 'IN_REVIEW'];
 const REOPENABLE_STATUSES: WorkItemStatus[] = ['DONE', 'CANCELLED'];
 
+type ButtonVariant = 'primary' | 'secondary' | 'danger';
+
+const ACTION_BUTTON_CLASSES: Record<ButtonVariant, string> = {
+  primary:
+    'rounded-lg bg-gradient-to-br from-accent to-accent-hover px-3.5 py-1.5 text-sm font-medium text-white shadow-sm shadow-accent/25 transition-all hover:shadow-md hover:shadow-accent/30 active:scale-[.98] disabled:opacity-50 disabled:shadow-none',
+  secondary:
+    'rounded-lg border border-border-subtle px-3.5 py-1.5 text-sm font-medium transition-colors hover:border-border-strong hover:bg-surface-hover disabled:opacity-50 disabled:hover:bg-transparent',
+  danger:
+    'rounded-lg border border-red-200 px-3.5 py-1.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:hover:bg-transparent dark:border-red-900 dark:hover:bg-red-950/40',
+};
+
+// Cancel is the one destructive action here — everything else that changes the
+// item's phase forward (or reopens it) reads as the primary call to action.
+function buttonVariant(label: string): ButtonVariant {
+  if (label === 'Cancel') return 'danger';
+  if (label === 'Send Back') return 'secondary';
+  return 'primary';
+}
+
 // Renders only the workflow buttons that are actually legal right now, per the
 // same state machine WorkflowService enforces server-side (workflow-transitions.ts)
 // — this is just UX convenience; the server is the real gatekeeper.
@@ -72,7 +91,7 @@ export function WorkflowActions({ workItemId, status, isManager, isAssignee }: W
   }
 
   return (
-    <div className="mt-6 max-w-sm rounded border border-black/10 p-4 dark:border-white/15">
+    <div className="mt-4 max-w-sm rounded-2xl border border-border-subtle bg-surface p-5 shadow-sm">
       <h2 className="text-sm font-semibold">Workflow actions</h2>
       <div className="mt-3 flex flex-wrap gap-2">
         {actions.map((action) => (
@@ -81,13 +100,17 @@ export function WorkflowActions({ workItemId, status, isManager, isAssignee }: W
             type="button"
             onClick={action.onClick}
             disabled={action.pending}
-            className="rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
+            className={ACTION_BUTTON_CLASSES[buttonVariant(action.label)]}
           >
             {action.pending ? 'Working…' : action.label}
           </button>
         ))}
       </div>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

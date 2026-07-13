@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useMembers } from '@/hooks/use-users';
 import { useSetAssignees } from '@/hooks/use-assignments';
 import { getErrorMessage } from '@/lib/get-error-message';
+import { Skeleton } from '@/components/skeleton';
 
 interface AssigneesEditorProps {
   workItemId: string;
@@ -42,34 +43,53 @@ export function AssigneesEditor({ workItemId, currentAssigneeIds }: AssigneesEdi
   };
 
   if (isLoading) {
-    return <p className="text-sm text-zinc-500">Loading members…</p>;
+    return (
+      <div className="space-y-1.5">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="h-6 w-3/5" />
+      </div>
+    );
   }
 
   return (
     <div>
       <ul className="space-y-1">
-        {members?.map((member) => (
-          <li key={member.id}>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={selected.includes(member.id)}
-                onChange={() => toggle(member.id)}
-                disabled={setAssignees.isPending}
-              />
-              {member.name} <span className="text-zinc-500">({member.email})</span>
-            </label>
-          </li>
-        ))}
+        {members?.map((member) => {
+          const checked = selected.includes(member.id);
+          return (
+            <li key={member.id}>
+              <label
+                className={`flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors ${
+                  checked ? 'bg-accent-soft' : 'hover:bg-surface-hover'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggle(member.id)}
+                  disabled={setAssignees.isPending}
+                  className="accent-accent"
+                />
+                <span className={checked ? 'font-medium text-accent' : ''}>{member.name}</span>
+                <span className="text-zinc-500">({member.email})</span>
+              </label>
+            </li>
+          );
+        })}
       </ul>
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40">
+          {error}
+        </p>
+      )}
 
       <button
         type="button"
         onClick={save}
         disabled={setAssignees.isPending}
-        className="mt-3 rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
+        className="mt-3 rounded-lg border border-border-subtle px-3.5 py-1.5 text-sm font-medium transition-colors hover:border-border-strong hover:bg-surface-hover disabled:opacity-50 disabled:hover:bg-transparent"
       >
         {setAssignees.isPending ? 'Saving…' : 'Save assignees'}
       </button>

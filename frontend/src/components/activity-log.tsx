@@ -1,6 +1,7 @@
 'use client';
 
 import { useActivityLog } from '@/hooks/use-activity-log';
+import { Skeleton } from '@/components/skeleton';
 
 const ACTION_LABELS: Record<string, string> = {
   CREATED: 'created this item',
@@ -24,25 +25,31 @@ export function ActivityLog({ workItemId }: { workItemId: string }) {
   const { data: entries, isLoading, isError } = useActivityLog(workItemId);
 
   return (
-    <div className="mt-6 max-w-sm">
+    <div className="mt-4 max-w-sm rounded-2xl border border-border-subtle bg-surface p-5 shadow-sm">
       <h2 className="text-sm font-semibold">Activity</h2>
 
-      {isLoading && <p className="mt-2 text-sm text-zinc-500">Loading activity…</p>}
+      {isLoading && (
+        <div className="mt-3 space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-4/5" />
+          <Skeleton className="h-4 w-3/5" />
+        </div>
+      )}
       {isError && <p className="mt-2 text-sm text-red-600">Couldn&apos;t load activity.</p>}
       {entries && entries.length === 0 && (
         <p className="mt-2 text-sm text-zinc-500">No activity yet.</p>
       )}
 
       {entries && entries.length > 0 && (
-        <ul className="mt-2 space-y-2 text-sm">
+        <ul className="mt-3 space-y-3 border-l-2 border-border-subtle pl-3.5 text-sm">
           {entries.map((entry) => (
-            <li key={entry.id} className="text-zinc-700 dark:text-zinc-300">
-              <span className="font-medium">{entry.actor.name}</span>{' '}
+            <li key={entry.id} className="relative text-zinc-700 dark:text-zinc-300">
+              <span className="absolute top-1.5 -left-[19px] h-2 w-2 rounded-full bg-accent" />
+              <span className="font-medium text-foreground">{entry.actor.name}</span>{' '}
               {ACTION_LABELS[entry.action] ?? entry.action.toLowerCase()}
-              <span className="text-zinc-500">
-                {' '}
-                · {new Date(entry.createdAt).toLocaleString()}
-              </span>
+              <div className="text-xs text-zinc-500">
+                {new Date(entry.createdAt).toLocaleString()}
+              </div>
             </li>
           ))}
         </ul>

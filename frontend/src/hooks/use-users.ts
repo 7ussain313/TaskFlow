@@ -16,5 +16,10 @@ export function useMembers(options: { enabled?: boolean } = {}) {
       return data;
     },
     enabled: options.enabled ?? true,
+    // The member roster changes rarely (new registrations only) compared to work
+    // items — a 5min staleTime means switching between the assignee picker, the
+    // filter bar, and the assignees editor reuses one cached fetch instead of
+    // three, without the list ever going noticeably stale.
+    staleTime: 5 * 60 * 1000,
   });
 }

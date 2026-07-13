@@ -34,7 +34,15 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
   once the backend is running.
 - **Full-stack Docker** — `docker compose up -d --build` from the repo root
   builds and runs Postgres, the backend, and the frontend together (not just
-  the database); see [`docker-compose.yml`](./docker-compose.yml).
+  the database); see [`docker-compose.yml`](./docker-compose.yml). The backend
+  container runs `prisma migrate deploy` automatically on boot, so the schema
+  is always up to date — but seeding is deliberately **not** automatic (it
+  wipes and repopulates data, which shouldn't happen on every container
+  restart). Run it once after the stack is up:
+  ```bash
+  docker compose exec backend npx prisma db seed
+  ```
+  Then open `http://localhost:3000` and sign in with one of the seeded accounts below.
 - **CI** — every push/PR runs backend + frontend install, lint, and the full
   test suite via GitHub Actions ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
 
@@ -56,6 +64,8 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 
 ### Prerequisites
 - Node.js 20+ and npm
+- No Neon account and don't want to sign up? Skip straight to the "Local via Docker"
+  option below.
 - A PostgreSQL database — either:
   - **Cloud (recommended, no local install):** a free [Neon](https://neon.tech) or
     [Supabase](https://supabase.com) Postgres project. **On Neon, use the pooled

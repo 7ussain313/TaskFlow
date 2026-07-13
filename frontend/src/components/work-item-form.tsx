@@ -61,7 +61,10 @@ export function WorkItemForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="max-w-lg space-y-4">
+    <form
+      onSubmit={handleSubmit(submit)}
+      className="max-w-lg space-y-4 rounded-2xl border border-border-subtle bg-surface p-6 shadow-sm"
+    >
       <div>
         <label htmlFor="title" className="block text-sm font-medium">
           Title
@@ -69,7 +72,7 @@ export function WorkItemForm({
         <input
           id="title"
           {...register('title')}
-          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+          className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
         />
         {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
       </div>
@@ -82,7 +85,7 @@ export function WorkItemForm({
           id="description"
           {...register('description')}
           rows={4}
-          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+          className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
         />
         {errors.description && (
           <p className="mt-1 text-xs text-red-600">{errors.description.message}</p>
@@ -97,7 +100,7 @@ export function WorkItemForm({
           <select
             id="priority"
             {...register('priority')}
-            className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
           >
             <option value="LOW">Low</option>
             <option value="MEDIUM">Medium</option>
@@ -114,7 +117,7 @@ export function WorkItemForm({
             id="category"
             {...register('category')}
             placeholder="Hardware, Network, Access…"
-            className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
           />
           {errors.category && (
             <p className="mt-1 text-xs text-red-600">{errors.category.message}</p>
@@ -130,7 +133,7 @@ export function WorkItemForm({
           id="dueDateLocal"
           type="datetime-local"
           {...register('dueDateLocal')}
-          className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
+          className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
         />
         {errors.dueDateLocal && (
           <p className="mt-1 text-xs text-red-600">{errors.dueDateLocal.message}</p>
@@ -147,7 +150,7 @@ export function WorkItemForm({
             alt="Current attachment"
             width={96}
             height={96}
-            className="mt-2 h-24 w-24 rounded object-cover"
+            className="mt-2 h-24 w-24 rounded-lg border border-border-subtle object-cover"
           />
         )}
         <input
@@ -155,16 +158,20 @@ export function WorkItemForm({
           type="file"
           accept="image/png,image/jpeg,image/webp"
           onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-          className="mt-1 w-full text-sm"
+          className="mt-2 w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-accent-soft file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-accent hover:file:bg-accent/20"
         />
       </div>
 
-      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
+      {serverError && (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40">
+          {serverError}
+        </p>
+      )}
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="rounded-lg bg-gradient-to-br from-accent to-accent-hover px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-accent/25 transition-all hover:shadow-lg hover:shadow-accent/30 active:scale-[.99] disabled:opacity-50 disabled:shadow-none"
       >
         {isSubmitting ? 'Saving…' : submitLabel}
       </button>

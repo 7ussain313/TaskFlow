@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
 import type { PaginatedWorkItems, Priority, WorkItem, WorkItemStatus } from '@/types/work-item';
 
@@ -55,6 +55,10 @@ export function useWorkItems(filters: WorkItemFilters = {}) {
       return data;
     },
     refetchInterval: 15000,
+    // Keeps showing the previous page's data (instead of a loading flash) while a
+    // filter/sort/page change is in flight — the list only ever replaces itself
+    // with newer data, never with a blank state, which reads as much faster.
+    placeholderData: keepPreviousData,
   });
 }
 
