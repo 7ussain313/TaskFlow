@@ -25,6 +25,19 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
 - **Testing** — backend unit + integration tests (Jest/Supertest) and frontend
   component/logic tests (Vitest + Testing Library); see `TEST_PLAN.md`.
 
+## Bonus features
+- **Search, sort & pagination** — `GET /api/work-items` accepts `search` (title/
+  description), `sortBy`/`sortOrder` (due date, priority, or status), and `page`/
+  `limit`, both wired up in the Work Items list UI.
+- **Swagger API docs** — every endpoint, request/response shape, and the JWT
+  bearer flow is documented and testable at `http://localhost:3001/api/docs`
+  once the backend is running.
+- **Full-stack Docker** — `docker compose up -d --build` from the repo root
+  builds and runs Postgres, the backend, and the frontend together (not just
+  the database); see [`docker-compose.yml`](./docker-compose.yml).
+- **CI** — every push/PR runs backend + frontend install, lint, and the full
+  test suite via GitHub Actions ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
+
 ## Stack
 - **Frontend:** Next.js (App Router) + React + TypeScript, Tailwind CSS, TanStack
   React Query, Axios, React Hook Form + Zod
@@ -50,8 +63,12 @@ centerpiece. Built for the SpotOn Full Stack Developer Internship take-home asse
     query param) — this app makes several short-lived queries per page, and Neon's
     direct (non-pooled) connection adds several seconds of connection-setup latency
     per burst of activity that the pooled endpoint avoids.
-  - **Local via Docker:** `docker compose up -d` from the repo root starts Postgres
-    on `localhost:5432` (user/pass/db: `taskflow`).
+  - **Local via Docker:** `docker compose up -d postgres` from the repo root starts
+    just Postgres on `localhost:5432` (user/pass/db: `taskflow`) — scoped to that one
+    service so it doesn't also build/start the backend and frontend containers,
+    which would conflict with running them via `npm run start:dev`/`npm run dev`
+    below. To run the entire stack in Docker instead (no local Node needed at all),
+    see "Bonus features" further down.
 
 ### Backend
 ```bash

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -44,11 +44,31 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, BCRYPT_SALT_ROUNDS);
-    const user = await this.usersService.createMember({
-      email: dto.email,
-      passwordHash,
-      name: dto.name,
-    });
+
+    let user: User;
+    try {
+      user = await this.usersService.createMember({
+        email: dto.email,
+        passwordHash,
+        name: dto.name,
+      });
+    } catch (err) {
+      // The findByEmail check above can't prevent two concurrent registrations
+      // for the same email (double-submit, retried request) from both passing
+      // it and racing to insert — the DB's unique constraint on email is the
+      // real guard. Translate its violation to the same 409 the pre-check
+      // throws, instead of letting a raw PrismaClientKnownRequestError fall
+      // through to the exception filter as a generic 500.
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'An account with this email already exists',
+        );
+      }
+      throw err;
+    }
 
     return {
       accessToken: this.issueToken(user),
