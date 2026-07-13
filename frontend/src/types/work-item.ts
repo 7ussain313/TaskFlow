@@ -15,6 +15,13 @@ export interface Assignee {
   role: string;
 }
 
+export interface PendingExtensionRequest {
+  id: string;
+  proposedDueDate: string;
+  createdAt: string;
+  requestedBy: Assignee;
+}
+
 export interface WorkItem {
   id: string;
   title: string;
@@ -28,5 +35,6 @@ export interface WorkItem {
   createdAt: string;
   updatedAt: string;
   assignees: Assignee[];
+  pendingExtensionRequest: PendingExtensionRequest | null;
   isOverdue: boolean;
 }

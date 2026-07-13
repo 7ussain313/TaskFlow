@@ -84,22 +84,35 @@ optional field cleanly and a dedicated endpoint would just duplicate the same lo
 | PUT | `/work-items/:id/assignments` | JWT, Manager | body `{ userIds: string[] }`, replaces the list |
 
 ### Workflow actions (`/api/work-items/:id/...`)
+No separate "assign" action endpoint — `PUT /work-items/:id/assignments` (above) IS
+the assign action: it's the same operation as setting the assignee list, and drives
+the BACKLOG → ASSIGNED transition itself (see AssignmentsService, Phase 5).
+
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/work-items/:id/assign` | Manager | BACKLOG → ASSIGNED (+ sets assignees) |
 | POST | `/work-items/:id/start` | Member (assignee) | ASSIGNED → IN_PROGRESS |
 | POST | `/work-items/:id/submit-review` | Member (assignee) | IN_PROGRESS → IN_REVIEW |
 | POST | `/work-items/:id/accept` | Manager | IN_REVIEW → DONE |
 | POST | `/work-items/:id/send-back` | Manager | IN_REVIEW → IN_PROGRESS |
-| POST | `/work-items/:id/cancel` | Manager | → CANCELLED |
-| POST | `/work-items/:id/reopen` | Manager | DONE/CANCELLED → BACKLOG/ASSIGNED |
+| POST | `/work-items/:id/cancel` | Manager | any non-terminal status → CANCELLED |
+| POST | `/work-items/:id/reopen` | Manager | DONE/CANCELLED → ASSIGNED if the item still has assignees, else BACKLOG |
 
-### Extension requests (`/api/work-items/:id/extension-requests`)
+All six routes above are implemented by `WorkflowService` (`src/workflow/`), which
+centralizes every legal transition in one table (`workflow-transitions.ts`) — no
+controller or service mutates `status` directly outside this table (`reopen`'s
+dynamic target is the one exception, handled as a special case since it isn't a
+fixed `from -> to` mapping).
+
+### Extension requests (`/api/work-items/:id/extension-requests`, `/api/extension-requests/:id/...`)
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| POST | `/work-items/:id/extension-requests` | Member (assignee) | body `{ proposedDueDate }` |
-| POST | `/extension-requests/:id/approve` | Manager | |
-| POST | `/extension-requests/:id/reject` | Manager | |
+| POST | `/work-items/:id/extension-requests` | Member (assignee) | body `{ proposedDueDate }`; 409 if the item is DONE/CANCELLED or already has a PENDING request |
+| POST | `/extension-requests/:id/approve` | Manager | updates the work item's `dueDate` to the proposed date; 409 if already decided |
+| POST | `/extension-requests/:id/reject` | Manager | due date untouched; 409 if already decided |
+
+Every work item response includes `pendingExtensionRequest` (the current PENDING
+request, or `null`) so the frontend never needs a separate fetch to know whether one
+is outstanding.
 
 ### Activity log (`/api/work-items/:id/activity`)
 | Method | Path | Auth | Notes |

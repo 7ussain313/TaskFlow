@@ -8,10 +8,13 @@ import { useDeleteWorkItem, useWorkItem } from '@/hooks/use-work-items';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
 import { AssigneesEditor } from '@/components/assignees-editor';
+import { WorkflowActions } from '@/components/workflow-actions';
+import { ExtensionRequestPanel } from '@/components/extension-request-panel';
 import { getImageUrl } from '@/lib/image-url';
 
-// Read-only detail view of a single work item, plus Manager-only edit/delete/assign
-// actions. Workflow actions (start work, submit review, etc.) are added in Phase 6.
+// Detail view of a single work item: read-only fields, Manager-only edit/delete/
+// assign, workflow action buttons (start/submit/accept/etc.), and the due-date
+// extension request flow.
 export default function WorkItemDetailPage({
   params,
 }: {
@@ -32,6 +35,8 @@ export default function WorkItemDetailPage({
   }
 
   const imageUrl = getImageUrl(item.imagePath);
+  const isManager = user?.role === 'MANAGER';
+  const isAssignee = item.assignees.some((a) => a.id === user?.id);
 
   return (
     <div className="max-w-2xl">
@@ -124,6 +129,15 @@ export default function WorkItemDetailPage({
           </div>
         </>
       )}
+
+      <WorkflowActions
+        workItemId={item.id}
+        status={item.status}
+        isManager={isManager}
+        isAssignee={isAssignee}
+      />
+
+      <ExtensionRequestPanel item={item} isManager={isManager} isAssignee={isAssignee} />
     </div>
   );
 }

@@ -179,40 +179,40 @@
 ## 📌 Phase 6 – Workflow Engine
 
 ### Module: WorkflowService
-- [ ] Centralize all status changes.
-- [ ] Prevent illegal transitions.
-- [ ] Validate role permissions.
-- [ ] Validate assignee permissions.
+- [x] Centralize all status changes. <!-- single WORKFLOW_TRANSITIONS table in workflow-transitions.ts; every action funnels through applyTransition/finalizeTransition -->
+- [x] Prevent illegal transitions. <!-- verified live: repeat/out-of-order actions and actions on terminal statuses all return 409 -->
+- [x] Validate role permissions.
+- [x] Validate assignee permissions.
 
 ### Module: Workflow Actions
-- [ ] Assign
-- [ ] Start Work
-- [ ] Submit Review
-- [ ] Accept
-- [ ] Send Back
-- [ ] Cancel
-- [ ] Reopen
+- [x] Assign <!-- built in Phase 5 (AssignmentsService) — assigning IS the BACKLOG->ASSIGNED transition -->
+- [x] Start Work
+- [x] Submit Review
+- [x] Accept
+- [x] Send Back
+- [x] Cancel
+- [x] Reopen <!-- dynamic target verified live: ASSIGNED when assignees remain, BACKLOG when empty -->
 
 ### Module: Due Date Extension
-- [ ] Request extension.
-- [ ] Approve extension.
-- [ ] Reject extension.
+- [x] Request extension. <!-- Member/assignee only; blocked on terminal items; one pending request at a time -->
+- [x] Approve extension. <!-- updates work item dueDate -->
+- [x] Reject extension. <!-- due date untouched; double-decide guarded with 409 -->
 
 ### Module: Overdue
-- [ ] Detect overdue items.
-- [ ] Mark overdue items.
+- [x] Detect overdue items. <!-- built in Phase 4 (isOverdue util), reused everywhere -->
+- [x] Mark overdue items. <!-- isOverdue flag on every API response -->
 
 ### Module: Activity Log
-- [ ] Log every mutation.
-- [ ] Store actor.
-- [ ] Store timestamp.
-- [ ] Store action.
-- [ ] Store metadata (old/new values where applicable).
+- [x] Log every mutation.
+- [x] Store actor.
+- [x] Store timestamp.
+- [x] Store action.
+- [x] Store metadata (old/new values where applicable). <!-- verified live: 16-entry log for one item's full lifecycle, in order -->
 
 **✅ Done When**
-- [ ] Illegal transitions are impossible.
-- [ ] Every mutation creates an activity log.
-- [ ] Workflow is fully protected.
+- [x] Illegal transitions are impossible.
+- [x] Every mutation creates an activity log.
+- [x] Workflow is fully protected.
 
 ---
 

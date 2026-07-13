@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { WorkItemsModule } from './work-items/work-items.module';
 import { AssignmentsModule } from './assignments/assignments.module';
+import { WorkflowModule } from './workflow/workflow.module';
+import { ExtensionRequestsModule } from './extension-requests/extension-requests.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -21,6 +23,8 @@ import { RolesGuard } from './common/guards/roles.guard';
     AuthModule,
     WorkItemsModule,
     AssignmentsModule,
+    WorkflowModule,
+    ExtensionRequestsModule,
   ],
   controllers: [AppController],
   providers: [

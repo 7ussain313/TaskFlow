@@ -48,6 +48,12 @@ export class WorkItemsController {
     return this.workItemsService.findOneForUser(id, user);
   }
 
+  // GET /api/work-items/:id/activity — the activity timeline for one item, newest first.
+  @Get(':id/activity')
+  findActivityLog(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+    return this.workItemsService.findActivityLog(id, user);
+  }
+
   // POST /api/work-items — Manager-only; multipart body with an optional image attachment.
   // Bad mime types are rejected in multerImageOptions.fileFilter before any disk write;
   // this pipe only needs to catch an oversized file.

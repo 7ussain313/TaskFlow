@@ -59,6 +59,27 @@ export class WorkItemsService {
     return toWorkItemResponse(item);
   }
 
+  // Lists a work item's activity log (who did what, when), newest first — scoped
+  // the same way as the item itself, so it 404s rather than leaking that an item a
+  // Member can't see even exists.
+  async findActivityLog(id: string, user: AuthUser) {
+    const item = await this.prisma.workItem.findFirst({
+      where: { id, ...this.visibilityFilter(user) },
+      select: { id: true },
+    });
+    if (!item) {
+      throw new NotFoundException('Work item not found');
+    }
+
+    return this.prisma.activityLog.findMany({
+      where: { workItemId: id },
+      include: {
+        actor: { select: { id: true, name: true, email: true, role: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   // Creates a new work item in BACKLOG, owned by the Manager who created it.
   async create(
     dto: CreateWorkItemDto,
