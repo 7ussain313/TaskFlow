@@ -159,20 +159,20 @@
 ## 📌 Phase 5 – Assignment System
 
 ### Module: Assignments
-- [ ] Assign members.
-- [ ] Reassign members (replace assignment list).
-- [ ] Remove assignees.
-- [ ] "Assigned to Me" view.
+- [x] Assign members.
+- [x] Reassign members (replace assignment list). <!-- one PUT endpoint covers assign/reassign/remove, per ARCHITECTURE.md -->
+- [x] Remove assignees.
+- [x] "Assigned to Me" view. <!-- GET /work-items/assigned-to-me + already-scoped main list for Members -->
 
 ### Module: Business Rules
-- [ ] Manager only.
-- [ ] Multiple assignees.
-- [ ] Removing all assignees resets status to Backlog.
+- [x] Manager only.
+- [x] Multiple assignees.
+- [x] Removing all assignees resets status to Backlog.
 
 **✅ Done When**
-- [ ] Assignment works.
-- [ ] Permissions are enforced.
-- [ ] Business rules pass.
+- [x] Assignment works.
+- [x] Permissions are enforced.
+- [x] Business rules pass.
 
 ---
 

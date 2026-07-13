@@ -35,6 +35,13 @@ export class WorkItemsController {
     return this.workItemsService.findAllForUser(user);
   }
 
+  // GET /api/work-items/assigned-to-me — must be declared before the `:id` route
+  // below, or Nest would match the literal path "assigned-to-me" as an :id instead.
+  @Get('assigned-to-me')
+  findAssignedToMe(@CurrentUser() user: AuthUser) {
+    return this.workItemsService.findAssignedToUser(user.id);
+  }
+
   // GET /api/work-items/:id — 404s if the item doesn't exist or isn't visible to the caller.
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: AuthUser) {

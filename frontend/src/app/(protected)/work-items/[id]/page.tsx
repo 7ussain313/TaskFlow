@@ -7,10 +7,11 @@ import { useAuth } from '@/lib/auth-context';
 import { useDeleteWorkItem, useWorkItem } from '@/hooks/use-work-items';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
+import { AssigneesEditor } from '@/components/assignees-editor';
 import { getImageUrl } from '@/lib/image-url';
 
-// Read-only detail view of a single work item, plus Manager-only edit/delete actions.
-// Workflow actions (assign, start work, etc.) are added in Phase 6.
+// Read-only detail view of a single work item, plus Manager-only edit/delete/assign
+// actions. Workflow actions (start work, submit review, etc.) are added in Phase 6.
 export default function WorkItemDetailPage({
   params,
 }: {
@@ -86,25 +87,42 @@ export default function WorkItemDetailPage({
       )}
 
       {user?.role === 'MANAGER' && (
-        <div className="mt-6 flex gap-3">
-          <Link
-            href={`/work-items/${item.id}/edit`}
-            className="rounded border border-black/15 px-4 py-2 text-sm dark:border-white/20"
-          >
-            Edit
-          </Link>
-          <button
-            type="button"
-            onClick={async () => {
-              if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return;
-              await deleteWorkItem.mutateAsync(item.id);
-              router.push('/work-items');
-            }}
-            className="rounded border border-red-600 px-4 py-2 text-sm text-red-600"
-          >
-            Delete
-          </button>
-        </div>
+        <>
+          <div className="mt-6 flex gap-3">
+            <Link
+              href={`/work-items/${item.id}/edit`}
+              className="rounded border border-black/15 px-4 py-2 text-sm dark:border-white/20"
+            >
+              Edit
+            </Link>
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm(`Delete "${item.title}"? This cannot be undone.`)) return;
+                await deleteWorkItem.mutateAsync(item.id);
+                router.push('/work-items');
+              }}
+              className="rounded border border-red-600 px-4 py-2 text-sm text-red-600"
+            >
+              Delete
+            </button>
+          </div>
+
+          <div className="mt-6 max-w-sm rounded border border-black/10 p-4 dark:border-white/15">
+            <h2 className="text-sm font-semibold">Assignees</h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              Assigning moves a Backlog item to Assigned. Removing everyone sends it
+              back to Backlog.
+            </p>
+            <div className="mt-3">
+              <AssigneesEditor
+                key={item.id}
+                workItemId={item.id}
+                currentAssigneeIds={item.assignees.map((a) => a.id)}
+              />
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

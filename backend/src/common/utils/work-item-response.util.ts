@@ -1,4 +1,14 @@
-import { Priority, WorkItemStatus } from '@prisma/client';
+import { Prisma, Priority, WorkItemStatus } from '@prisma/client';
+
+// Shared `include` so every query that needs assignees shapes them the same way —
+// reused by WorkItemsService and AssignmentsService.
+export const workItemWithAssigneesInclude = {
+  assignments: {
+    include: {
+      user: { select: { id: true, name: true, email: true, role: true } },
+    },
+  },
+} satisfies Prisma.WorkItemInclude;
 
 export interface AssigneeSummary {
   id: string;

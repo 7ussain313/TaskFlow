@@ -7,6 +7,7 @@ import { PrismaModule } from './common/prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { WorkItemsModule } from './work-items/work-items.module';
+import { AssignmentsModule } from './assignments/assignments.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -19,6 +20,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     UsersModule,
     AuthModule,
     WorkItemsModule,
+    AssignmentsModule,
   ],
   controllers: [AppController],
   providers: [

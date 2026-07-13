@@ -4,18 +4,12 @@ import { join } from 'path';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { AuthUser } from '../common/types/auth-user.type';
-import { toWorkItemResponse } from '../common/utils/work-item-response.util';
+import {
+  toWorkItemResponse,
+  workItemWithAssigneesInclude,
+} from '../common/utils/work-item-response.util';
 import { CreateWorkItemDto } from './dto/create-work-item.dto';
 import { UpdateWorkItemDto } from './dto/update-work-item.dto';
-
-// Shared `include` so every read query returns assignees in the same shape.
-const WITH_ASSIGNEES = {
-  assignments: {
-    include: {
-      user: { select: { id: true, name: true, email: true, role: true } },
-    },
-  },
-} satisfies Prisma.WorkItemInclude;
 
 @Injectable()
 export class WorkItemsService {
@@ -34,7 +28,19 @@ export class WorkItemsService {
   async findAllForUser(user: AuthUser) {
     const items = await this.prisma.workItem.findMany({
       where: this.visibilityFilter(user),
-      include: WITH_ASSIGNEES,
+      include: workItemWithAssigneesInclude,
+      orderBy: { dueDate: 'asc' },
+    });
+    return items.map(toWorkItemResponse);
+  }
+
+  // Lists work items the given user is personally assigned to — the "Assigned to me"
+  // view. Scoped by userId directly rather than role, so it behaves sensibly even if
+  // a Manager (who normally can't be an assignee) ever calls it.
+  async findAssignedToUser(userId: string) {
+    const items = await this.prisma.workItem.findMany({
+      where: { assignments: { some: { userId } } },
+      include: workItemWithAssigneesInclude,
       orderBy: { dueDate: 'asc' },
     });
     return items.map(toWorkItemResponse);
@@ -45,7 +51,7 @@ export class WorkItemsService {
   async findOneForUser(id: string, user: AuthUser) {
     const item = await this.prisma.workItem.findFirst({
       where: { id, ...this.visibilityFilter(user) },
-      include: WITH_ASSIGNEES,
+      include: workItemWithAssigneesInclude,
     });
     if (!item) {
       throw new NotFoundException('Work item not found');
@@ -69,7 +75,7 @@ export class WorkItemsService {
         createdById,
         imagePath: image ? image.filename : null,
       },
-      include: WITH_ASSIGNEES,
+      include: workItemWithAssigneesInclude,
     });
 
     await this.prisma.activityLog.create({
@@ -102,7 +108,7 @@ export class WorkItemsService {
         dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
         imagePath: image ? image.filename : undefined,
       },
-      include: WITH_ASSIGNEES,
+      include: workItemWithAssigneesInclude,
     });
 
     if (image && existing.imagePath) {
