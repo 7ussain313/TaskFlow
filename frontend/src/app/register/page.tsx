@@ -53,16 +53,22 @@ export default function RegisterPage() {
           New accounts are created as Members. A Manager account is seeded — see the README.
         </p>
 
-        <label className="mt-6 block text-sm font-medium">Name</label>
+        <label htmlFor="name" className="mt-6 block text-sm font-medium">
+          Name
+        </label>
         <input
+          id="name"
           {...register('name')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
           placeholder="Jane Doe"
         />
         {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
 
-        <label className="mt-4 block text-sm font-medium">Email</label>
+        <label htmlFor="email" className="mt-4 block text-sm font-medium">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
           {...register('email')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
@@ -70,8 +76,11 @@ export default function RegisterPage() {
         />
         {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
 
-        <label className="mt-4 block text-sm font-medium">Password</label>
+        <label htmlFor="password" className="mt-4 block text-sm font-medium">
+          Password
+        </label>
         <input
+          id="password"
           type="password"
           {...register('password')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
@@ -86,7 +95,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-6 w-full rounded bg-foreground px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
+          className="mt-6 w-full rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {isSubmitting ? 'Creating account…' : 'Create account'}
         </button>

@@ -35,17 +35,25 @@ export default function ProtectedLayout({
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-black/10 px-6 py-4 dark:border-white/15">
-        <div className="flex items-center gap-6">
+      <header className="flex flex-col gap-3 border-b border-black/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:border-white/15">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
           <span className="font-semibold">TaskFlow</span>
-          <nav className="flex gap-4 text-sm text-zinc-500">
-            <Link href="/dashboard">Dashboard</Link>
-            <Link href="/board">Board</Link>
-            <Link href="/timeline">Timeline</Link>
-            <Link href="/work-items">Work Items</Link>
+          <nav className="flex flex-wrap gap-4 text-sm text-zinc-500">
+            <Link href="/dashboard" className="transition-colors hover:text-foreground">
+              Dashboard
+            </Link>
+            <Link href="/board" className="transition-colors hover:text-foreground">
+              Board
+            </Link>
+            <Link href="/timeline" className="transition-colors hover:text-foreground">
+              Timeline
+            </Link>
+            <Link href="/work-items" className="transition-colors hover:text-foreground">
+              Work Items
+            </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-4 text-sm">
           <span className="text-zinc-500">
             {user.name} · {user.role}
           </span>
@@ -55,13 +63,13 @@ export default function ProtectedLayout({
               logout();
               router.replace('/login');
             }}
-            className="rounded border border-black/10 px-3 py-1 dark:border-white/15"
+            className="rounded border border-black/10 px-3 py-1 transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.05]"
           >
             Log out
           </button>
         </div>
       </header>
-      <main className="flex flex-1 flex-col p-6">{children}</main>
+      <main className="flex flex-1 flex-col p-4 sm:p-6">{children}</main>
     </div>
   );
 }

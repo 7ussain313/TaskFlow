@@ -81,7 +81,7 @@ export function WorkflowActions({ workItemId, status, isManager, isAssignee }: W
             type="button"
             onClick={action.onClick}
             disabled={action.pending}
-            className="rounded border border-black/15 px-3 py-1.5 text-sm dark:border-white/20 disabled:opacity-50"
+            className="rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
           >
             {action.pending ? 'Working…' : action.label}
           </button>

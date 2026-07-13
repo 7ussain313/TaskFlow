@@ -197,7 +197,10 @@ export class WorkItemsService {
     actorId: string,
     image?: Express.Multer.File,
   ) {
-    const existing = await this.prisma.workItem.findUnique({ where: { id } });
+    const existing = await this.prisma.workItem.findUnique({
+      where: { id },
+      select: { imagePath: true },
+    });
     if (!existing) {
       throw new NotFoundException('Work item not found');
     }
@@ -234,7 +237,10 @@ export class WorkItemsService {
   // Deletes a work item (assignments/activity/extension rows cascade via the FK) and
   // its attached image file, if any.
   async remove(id: string) {
-    const existing = await this.prisma.workItem.findUnique({ where: { id } });
+    const existing = await this.prisma.workItem.findUnique({
+      where: { id },
+      select: { imagePath: true },
+    });
     if (!existing) {
       throw new NotFoundException('Work item not found');
     }

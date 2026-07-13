@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
@@ -12,12 +13,17 @@ interface WorkItemCardProps {
   showStatus?: boolean;
 }
 
-// Compact card used by both the Phase Board and the Timeline view.
-export function WorkItemCard({ item, showStatus = false }: WorkItemCardProps) {
+// Compact card used by both the Phase Board and the Timeline view. Memoized
+// because both views re-render their full item list on every 15s poll — this
+// keeps unchanged cards from re-rendering when only a sibling's data changed.
+export const WorkItemCard = memo(function WorkItemCard({
+  item,
+  showStatus = false,
+}: WorkItemCardProps) {
   return (
     <Link
       href={`/work-items/${item.id}`}
-      className="block rounded border border-black/10 bg-background p-3 text-sm hover:border-black/20 dark:border-white/15 dark:hover:border-white/30"
+      className="block rounded border border-black/10 bg-background p-3 text-sm transition-colors hover:border-black/20 dark:border-white/15 dark:hover:border-white/30"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="font-medium">{item.title}</p>
@@ -37,4 +43,4 @@ export function WorkItemCard({ item, showStatus = false }: WorkItemCardProps) {
       </div>
     </Link>
   );
-}
+});

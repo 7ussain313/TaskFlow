@@ -49,7 +49,7 @@ export function ExtensionRequestPanel({ item, isManager, isAssignee }: Extension
                 }
               }}
               disabled={approveExtension.isPending || rejectExtension.isPending}
-              className="rounded border border-black/15 px-3 py-1.5 text-sm dark:border-white/20 disabled:opacity-50"
+              className="rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
             >
               Approve
             </button>
@@ -64,7 +64,7 @@ export function ExtensionRequestPanel({ item, isManager, isAssignee }: Extension
                 }
               }}
               disabled={approveExtension.isPending || rejectExtension.isPending}
-              className="rounded border border-red-600 px-3 py-1.5 text-sm text-red-600 disabled:opacity-50"
+              className="rounded border border-red-600 px-3 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-600/10 disabled:opacity-50 disabled:hover:bg-transparent"
             >
               Reject
             </button>
@@ -85,6 +85,7 @@ export function ExtensionRequestPanel({ item, isManager, isAssignee }: Extension
       <div className="mt-3 flex items-center gap-2">
         <input
           type="datetime-local"
+          aria-label="Proposed due date"
           value={proposedDate}
           onChange={(e) => setProposedDate(e.target.value)}
           className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
@@ -101,7 +102,7 @@ export function ExtensionRequestPanel({ item, isManager, isAssignee }: Extension
             }
           }}
           disabled={!proposedDate || requestExtension.isPending}
-          className="rounded border border-black/15 px-3 py-1.5 text-sm dark:border-white/20 disabled:opacity-50"
+          className="rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
         >
           {requestExtension.isPending ? 'Requesting…' : 'Request'}
         </button>

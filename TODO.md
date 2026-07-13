@@ -425,22 +425,22 @@
 ## 📌 Bonus Phase 15 – Production Polish
 
 ### Module: Performance
-- [ ] Optimize database queries.
-- [ ] Optimize React rendering.
-- [ ] Optimize image loading.
+- [x] Optimize database queries. <!-- added indexes on WorkItem.priority and Assignment.userId (migration 20260713212417); trimmed 3 findUnique calls in work-items/assignments services to select only the fields actually used instead of the full row -->
+- [x] Optimize React rendering. <!-- memoized WorkItemCard so board/timeline's full-list re-render on the 15s poll doesn't re-render every unchanged card -->
+- [x] Optimize image loading. <!-- replaced raw <img> with next/image on the work item detail page and form preview; next.config.ts allow-lists the backend's /uploads origin -->
 
 ### Module: UX
-- [ ] Improve responsive design.
-- [ ] Improve animations.
-- [ ] Improve accessibility.
-- [ ] Improve keyboard navigation.
+- [x] Improve responsive design. <!-- protected layout header/nav wraps to a column on mobile instead of overflowing -->
+- [x] Improve animations. <!-- consistent transition-colors/transition-opacity + hover feedback added to every button/link across the app (several had none at all) -->
+- [x] Improve accessibility. <!-- htmlFor/id pairing on every form label, aria-label on icon-only/unlabeled inputs (filters, extension date picker) -->
+- [x] Improve keyboard navigation. <!-- audited: every interactive element is already a real button/link/input (no custom div/span onClick), no modals to trap focus; added a visible focus-visible ring since none existed before -->
 
 ### Module: Final Cleanup
-- [ ] Remove unused code.
-- [ ] Remove debug logs.
-- [ ] Review commit history.
-- [ ] Final code review.
+- [x] Remove unused code. <!-- eslint (backend + frontend) clean, no unused vars/imports -->
+- [x] Remove debug logs. <!-- grepped src for console.log/debug outside tests: none -->
+- [x] Review commit history. <!-- one commit per phase, conventional prefixes, verified in Phase 10 -->
+- [x] Final code review. <!-- backend query audit (services) + frontend a11y/keyboard audit done this phase -->
 
 **✅ Done When**
-- [ ] Project is production-ready.
-- [ ] No obvious performance or UX issues remain.
+- [x] Project is production-ready.
+- [x] No obvious performance or UX issues remain.

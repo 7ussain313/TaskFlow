@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -62,8 +63,11 @@ export function WorkItemForm({
   return (
     <form onSubmit={handleSubmit(submit)} className="max-w-lg space-y-4">
       <div>
-        <label className="block text-sm font-medium">Title</label>
+        <label htmlFor="title" className="block text-sm font-medium">
+          Title
+        </label>
         <input
+          id="title"
           {...register('title')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
         />
@@ -71,8 +75,11 @@ export function WorkItemForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Description</label>
+        <label htmlFor="description" className="block text-sm font-medium">
+          Description
+        </label>
         <textarea
+          id="description"
           {...register('description')}
           rows={4}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
@@ -84,8 +91,11 @@ export function WorkItemForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium">Priority</label>
+          <label htmlFor="priority" className="block text-sm font-medium">
+            Priority
+          </label>
           <select
+            id="priority"
             {...register('priority')}
             className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
           >
@@ -97,8 +107,11 @@ export function WorkItemForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Category</label>
+          <label htmlFor="category" className="block text-sm font-medium">
+            Category
+          </label>
           <input
+            id="category"
             {...register('category')}
             placeholder="Hardware, Network, Access…"
             className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
@@ -110,8 +123,11 @@ export function WorkItemForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Due date &amp; time</label>
+        <label htmlFor="dueDateLocal" className="block text-sm font-medium">
+          Due date &amp; time
+        </label>
         <input
+          id="dueDateLocal"
           type="datetime-local"
           {...register('dueDateLocal')}
           className="mt-1 w-full rounded border border-black/15 px-3 py-2 text-sm dark:border-white/20 dark:bg-transparent"
@@ -122,18 +138,20 @@ export function WorkItemForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">
+        <label htmlFor="image" className="block text-sm font-medium">
           Image attachment (PNG/JPEG/WEBP, max 5MB)
         </label>
         {existingImageUrl && !image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={existingImageUrl}
             alt="Current attachment"
+            width={96}
+            height={96}
             className="mt-2 h-24 w-24 rounded object-cover"
           />
         )}
         <input
+          id="image"
           type="file"
           accept="image/png,image/jpeg,image/webp"
           onChange={(e) => setImage(e.target.files?.[0] ?? null)}
@@ -146,7 +164,7 @@ export function WorkItemForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background disabled:opacity-50"
+        className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {isSubmitting ? 'Saving…' : submitLabel}
       </button>

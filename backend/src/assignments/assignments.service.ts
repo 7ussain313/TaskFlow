@@ -69,6 +69,7 @@ export class AssignmentsService {
   ) {
     const workItem = await this.prisma.workItem.findUnique({
       where: { id: workItemId },
+      select: { status: true },
     });
     if (!workItem) {
       throw new NotFoundException('Work item not found');

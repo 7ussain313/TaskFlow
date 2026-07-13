@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -81,11 +82,12 @@ export default function WorkItemDetailPage({
       )}
 
       {imageUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={imageUrl}
           alt={`Attachment for ${item.title}`}
-          className="mt-4 max-w-sm rounded border border-black/10 dark:border-white/15"
+          width={600}
+          height={400}
+          className="mt-4 h-auto w-full max-w-sm rounded border border-black/10 dark:border-white/15"
         />
       )}
 

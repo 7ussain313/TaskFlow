@@ -63,6 +63,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
     <div className="flex flex-wrap items-center gap-3">
       <input
         type="text"
+        aria-label="Search title or description"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder="Search title or description…"
@@ -70,6 +71,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
       />
 
       <select
+        aria-label="Filter by phase"
         value={filters.status ?? ''}
         onChange={(e) =>
           onChange({ ...filters, status: (e.target.value || undefined) as WorkItemFilters['status'] })
@@ -85,6 +87,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
       </select>
 
       <select
+        aria-label="Filter by priority"
         value={filters.priority ?? ''}
         onChange={(e) =>
           onChange({ ...filters, priority: (e.target.value || undefined) as WorkItemFilters['priority'] })
@@ -101,6 +104,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
 
       {showAssigneeFilter && (
         <select
+          aria-label="Filter by assignee"
           value={filters.assigneeId ?? ''}
           onChange={(e) => onChange({ ...filters, assigneeId: e.target.value || undefined })}
           className="rounded border border-black/15 px-2 py-1.5 text-sm dark:border-white/20 dark:bg-transparent"
@@ -115,6 +119,7 @@ export function WorkItemFiltersBar({ filters, onChange, showAssigneeFilter }: Wo
       )}
 
       <select
+        aria-label="Sort by"
         value={filters.sortBy ?? 'dueDate'}
         onChange={(e) =>
           onChange({ ...filters, sortBy: e.target.value as WorkItemFilters['sortBy'] })

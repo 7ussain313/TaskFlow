@@ -42,7 +42,7 @@ export default function WorkItemsPage() {
         {user?.role === 'MANAGER' && (
           <Link
             href="/work-items/new"
-            className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background"
+            className="rounded bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             New Work Item
           </Link>
@@ -81,7 +81,7 @@ export default function WorkItemsPage() {
             <li key={item.id}>
               <Link
                 href={`/work-items/${item.id}`}
-                className="flex items-center justify-between gap-4 py-3 hover:bg-black/[.02] dark:hover:bg-white/[.03]"
+                className="flex items-center justify-between gap-4 py-3 transition-colors hover:bg-black/[.02] dark:hover:bg-white/[.03]"
               >
                 <div>
                   <p className="font-medium">{item.title}</p>

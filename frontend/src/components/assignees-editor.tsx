@@ -69,7 +69,7 @@ export function AssigneesEditor({ workItemId, currentAssigneeIds }: AssigneesEdi
         type="button"
         onClick={save}
         disabled={setAssignees.isPending}
-        className="mt-3 rounded border border-black/15 px-3 py-1.5 text-sm dark:border-white/20 disabled:opacity-50"
+        className="mt-3 rounded border border-black/15 px-3 py-1.5 text-sm transition-colors hover:bg-black/[.03] disabled:opacity-50 disabled:hover:bg-transparent dark:border-white/20 dark:hover:bg-white/[.05]"
       >
         {setAssignees.isPending ? 'Saving…' : 'Save assignees'}
       </button>

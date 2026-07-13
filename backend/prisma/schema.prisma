@@ -81,6 +81,7 @@ model WorkItem {
 
   @@index([status])
   @@index([dueDate])
+  @@index([priority])
   @@map("work_items")
 }
 
@@ -93,8 +94,11 @@ model Assignment {
   workItem WorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // A member can only be assigned to a given work item once.
+  // A member can only be assigned to a given work item once. The unique index above
+  // is workItemId-first, so it doesn't serve userId-first lookups (every Member's
+  // visibility filter, and the "assigned to me" view) — indexed separately here.
   @@unique([workItemId, userId])
+  @@index([userId])
   @@map("assignments")
 }
 
