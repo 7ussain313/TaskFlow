@@ -10,6 +10,7 @@ import {
 } from '../common/utils/work-item-response.util';
 import { CreateWorkItemDto } from './dto/create-work-item.dto';
 import { UpdateWorkItemDto } from './dto/update-work-item.dto';
+import { QueryWorkItemsDto } from './dto/query-work-items.dto';
 
 @Injectable()
 export class WorkItemsService {
@@ -24,10 +25,30 @@ export class WorkItemsService {
     return { assignments: { some: { userId: user.id } } };
   }
 
-  // Lists work items visible to the caller (all for Manager, own assignments for Member).
-  async findAllForUser(user: AuthUser) {
+  // Lists work items visible to the caller (all for Manager, own assignments for
+  // Member), optionally narrowed by status/assignee/priority. Filters are combined
+  // with the visibility scope via an explicit `AND` array — NOT object spread —
+  // because the visibility filter and an assigneeId filter both use an
+  // `assignments` key; spreading them into one object would let the later key
+  // silently overwrite the earlier one, which for a Member would drop their own
+  // scoping and leak another member's items. `AND` keeps both conditions distinct
+  // and both required.
+  async findAllForUser(user: AuthUser, filters: QueryWorkItemsDto = {}) {
     const items = await this.prisma.workItem.findMany({
-      where: this.visibilityFilter(user),
+      where: {
+        AND: [
+          this.visibilityFilter(user),
+          ...(filters.status ? [{ status: filters.status }] : []),
+          ...(filters.priority ? [{ priority: filters.priority }] : []),
+          ...(filters.assigneeId
+            ? [
+                {
+                  assignments: { some: { userId: filters.assigneeId } },
+                } as const,
+              ]
+            : []),
+        ],
+      },
       include: workItemWithAssigneesInclude,
       orderBy: { dueDate: 'asc' },
     });

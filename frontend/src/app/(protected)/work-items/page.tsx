@@ -1,16 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { useWorkItems } from '@/hooks/use-work-items';
+import { useWorkItems, type WorkItemFilters } from '@/hooks/use-work-items';
 import { StatusBadge } from '@/components/status-badge';
 import { PriorityBadge } from '@/components/priority-badge';
 import { OverdueBadge } from '@/components/overdue-badge';
+import { WorkItemFiltersBar } from '@/components/work-item-filters';
 
-// Simple list of every work item visible to the current user (API-scoped by role).
+// List of every work item visible to the current user (API-scoped by role),
+// with Manager-facing filters by phase, assignee, and priority.
 export default function WorkItemsPage() {
   const { user } = useAuth();
-  const { data: items, isLoading, isError } = useWorkItems();
+  const [filters, setFilters] = useState<WorkItemFilters>({});
+  const { data: items, isLoading, isError } = useWorkItems(filters);
 
   return (
     <div>
@@ -26,6 +30,14 @@ export default function WorkItemsPage() {
         )}
       </div>
 
+      <div className="mt-4">
+        <WorkItemFiltersBar
+          filters={filters}
+          onChange={setFilters}
+          showAssigneeFilter={user?.role === 'MANAGER'}
+        />
+      </div>
+
       {isLoading && <p className="mt-6 text-sm text-zinc-500">Loading work items…</p>}
 
       {isError && (
@@ -36,8 +48,11 @@ export default function WorkItemsPage() {
 
       {items && items.length === 0 && (
         <p className="mt-6 text-sm text-zinc-500">
-          No work items yet.{' '}
-          {user?.role === 'MANAGER' ? 'Create the first one above.' : 'Nothing assigned to you yet.'}
+          {Object.keys(filters).length > 0
+            ? 'No work items match these filters.'
+            : user?.role === 'MANAGER'
+              ? 'No work items yet. Create the first one above.'
+              : 'Nothing assigned to you yet.'}
         </p>
       )}
 

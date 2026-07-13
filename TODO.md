@@ -255,18 +255,18 @@
 ## 📌 Phase 8 – Filtering & Access Control
 
 ### Module: Filters
-- [ ] Filter by status.
-- [ ] Filter by assignee.
-- [ ] Filter by priority.
+- [x] Filter by status.
+- [x] Filter by assignee. <!-- Manager-only in the UI; backend accepts it from anyone since it composes safely with the visibility scope -->
+- [x] Filter by priority.
 
 ### Module: Access
-- [ ] Manager sees all items.
-- [ ] Member sees only assigned items.
-- [ ] API enforces permissions.
+- [x] Manager sees all items. <!-- built Phase 4 -->
+- [x] Member sees only assigned items. <!-- built Phase 4 -->
+- [x] API enforces permissions. <!-- built Phase 3-6; every route -->
 
 **✅ Done When**
-- [ ] Filters work.
-- [ ] Data access is secure.
+- [x] Filters work. <!-- verified live via Playwright: status/priority/assignee each narrow correctly, cleared correctly -->
+- [x] Data access is secure. <!-- caught and fixed a real bug while building this: combining the filter with visibility via object spread would have let a Member's assigneeId filter silently overwrite their own scoping -->
 
 ---
 

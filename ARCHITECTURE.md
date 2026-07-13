@@ -67,7 +67,7 @@ Base path: `/api`. All responses use a consistent envelope on error:
 ### Work items (`/api/work-items`)
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| GET | `/work-items` | JWT | Manager: all (filters added in Phase 8). Member: scoped to own assignments only, enforced in the query — unassigned/unauthorized items 404, not 403 |
+| GET | `/work-items?status=&assigneeId=&priority=` | JWT | Manager: all, optionally filtered. Member: scoped to own assignments only, enforced in the query — unassigned/unauthorized items 404, not 403. Filters compose with the visibility scope via Prisma's `AND` array, not object spread — see WorkItemsService.findAllForUser for why that distinction matters |
 | GET | `/work-items/assigned-to-me` | JWT, Member | explicit "assigned to me" view (Phase 5) |
 | GET | `/work-items/:id` | JWT | 404 if not visible to caller |
 | POST | `/work-items` | JWT, Manager | multipart/form-data (fields + optional `image`) |

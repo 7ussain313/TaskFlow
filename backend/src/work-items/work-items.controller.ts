@@ -10,6 +10,7 @@ import {
   ParseFilePipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { WorkItemsService } from './work-items.service';
 import { CreateWorkItemDto } from './dto/create-work-item.dto';
 import { UpdateWorkItemDto } from './dto/update-work-item.dto';
+import { QueryWorkItemsDto } from './dto/query-work-items.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/types/auth-user.type';
@@ -29,10 +31,11 @@ import {
 export class WorkItemsController {
   constructor(private readonly workItemsService: WorkItemsService) {}
 
-  // GET /api/work-items — scoped by role in the service (Manager: all, Member: assigned only).
+  // GET /api/work-items?status=&assigneeId=&priority= — scoped by role in the
+  // service (Manager: all, Member: assigned only); filters narrow within that scope.
   @Get()
-  findAll(@CurrentUser() user: AuthUser) {
-    return this.workItemsService.findAllForUser(user);
+  findAll(@Query() query: QueryWorkItemsDto, @CurrentUser() user: AuthUser) {
+    return this.workItemsService.findAllForUser(user, query);
   }
 
   // GET /api/work-items/assigned-to-me — must be declared before the `:id` route
