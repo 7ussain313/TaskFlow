@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -12,9 +11,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Serves uploaded work-item images at /uploads/<filename> — deliberately outside
-  // the /api prefix since these are static files, not API routes.
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+  // Work item images are served through GET /api/work-items/:id/image (auth +
+  // visibility scoped), not as public static files — see work-items.controller.ts.
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',

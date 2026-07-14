@@ -252,6 +252,21 @@ export class WorkItemsService {
     }
   }
 
+  // Resolves the on-disk filename for a work item's image, scoped by the same
+  // visibility rule as findOneForUser — a Member can't fetch an image belonging
+  // to an item they can't see, and gets 404 (not 403) either way. Also 404s if
+  // the item has no image attached, since there's nothing to serve.
+  async getImageFilenameForUser(id: string, user: AuthUser): Promise<string> {
+    const item = await this.prisma.workItem.findFirst({
+      where: { id, ...this.visibilityFilter(user) },
+      select: { imagePath: true },
+    });
+    if (!item?.imagePath) {
+      throw new NotFoundException('Image not found');
+    }
+    return item.imagePath;
+  }
+
   // Best-effort disk cleanup; a missing file should never fail the request.
   private async deleteImageFile(filename: string) {
     try {

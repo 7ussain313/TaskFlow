@@ -14,7 +14,7 @@ import { WorkflowActions } from '@/components/workflow-actions';
 import { ExtensionRequestPanel } from '@/components/extension-request-panel';
 import { ActivityLog } from '@/components/activity-log';
 import { Skeleton } from '@/components/skeleton';
-import { getImageUrl } from '@/lib/image-url';
+import { useWorkItemImage } from '@/hooks/use-work-item-image';
 
 // Detail view of a single work item: read-only fields, Manager-only edit/delete/
 // assign, workflow action buttons (start/submit/accept/etc.), and the due-date
@@ -29,6 +29,7 @@ export default function WorkItemDetailPage({
   const router = useRouter();
   const { data: item, isLoading, isError } = useWorkItem(id);
   const deleteWorkItem = useDeleteWorkItem();
+  const imageUrl = useWorkItemImage(item?.id ?? null, Boolean(item?.imagePath));
 
   if (isLoading) {
     return (
@@ -48,7 +49,6 @@ export default function WorkItemDetailPage({
     );
   }
 
-  const imageUrl = getImageUrl(item.imagePath);
   const isManager = user?.role === 'MANAGER';
   const isAssignee = item.assignees.some((a) => a.id === user?.id);
 
@@ -102,6 +102,7 @@ export default function WorkItemDetailPage({
             alt={`Attachment for ${item.title}`}
             width={600}
             height={400}
+            unoptimized
             className="mt-4 h-auto w-full max-w-sm rounded-xl border border-border-subtle"
           />
         )}

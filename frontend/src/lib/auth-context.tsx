@@ -10,9 +10,7 @@ import {
 } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { AuthUser } from '@/types/auth';
-import { AUTH_TOKEN_KEY } from './api-client';
-
-const AUTH_USER_KEY = 'taskflow_user';
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from './api-client';
 
 interface AuthContextValue {
   user: AuthUser | null;

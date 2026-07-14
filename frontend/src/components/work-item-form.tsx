@@ -100,7 +100,7 @@ export function WorkItemForm({
           <select
             id="priority"
             {...register('priority')}
-            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
+            className="mt-1.5 w-full rounded-lg border border-border-subtle bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-accent"
           >
             <option value="LOW">Low</option>
             <option value="MEDIUM">Medium</option>
@@ -150,6 +150,7 @@ export function WorkItemForm({
             alt="Current attachment"
             width={96}
             height={96}
+            unoptimized
             className="mt-2 h-24 w-24 rounded-lg border border-border-subtle object-cover"
           />
         )}

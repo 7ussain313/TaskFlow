@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useUpdateWorkItem, useWorkItem } from '@/hooks/use-work-items';
 import { WorkItemForm } from '@/components/work-item-form';
-import { getImageUrl } from '@/lib/image-url';
+import { useWorkItemImage } from '@/hooks/use-work-item-image';
 import { toDatetimeLocalValue } from '@/lib/datetime-local';
 import { Skeleton } from '@/components/skeleton';
 
@@ -20,6 +20,7 @@ export default function EditWorkItemPage({
   const router = useRouter();
   const { data: item, isLoading } = useWorkItem(id);
   const updateWorkItem = useUpdateWorkItem(id);
+  const existingImageUrl = useWorkItemImage(item?.id ?? null, Boolean(item?.imagePath));
 
   useEffect(() => {
     if (!authLoading && user && user.role !== 'MANAGER') {
@@ -46,7 +47,7 @@ export default function EditWorkItemPage({
       <div className="mt-6">
         <WorkItemForm
           submitLabel="Save changes"
-          existingImageUrl={getImageUrl(item.imagePath)}
+          existingImageUrl={existingImageUrl}
           defaultValues={{
             title: item.title,
             description: item.description ?? undefined,

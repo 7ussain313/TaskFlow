@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,10 +18,22 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-// Real login form: submits to POST /auth/login, stores the token, then redirects.
+// useSearchParams needs a Suspense boundary in the App Router, or static
+// prerendering of this page fails at build time.
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+// Real login form: submits to POST /auth/login, stores the token, then redirects.
+function LoginForm() {
   const auth = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sessionExpired = searchParams.get('sessionExpired') === '1';
   const [serverError, setServerError] = useState<string | null>(null);
   const {
     register,
@@ -59,6 +71,12 @@ export default function LoginPage() {
           onSubmit={handleSubmit(onSubmit)}
           className="rounded-2xl border border-border-subtle bg-surface p-8 shadow-xl shadow-black/[.03] dark:shadow-black/20"
         >
+          {sessionExpired && (
+            <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700 dark:bg-amber-950/40 dark:text-amber-400">
+              Your session has expired. Please log in again.
+            </p>
+          )}
+
           <label htmlFor="email" className="block text-sm font-medium">
             Email
           </label>

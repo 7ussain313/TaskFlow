@@ -1,3 +1,4 @@
+import { join } from 'path';
 import {
   Body,
   Controller,
@@ -11,9 +12,11 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -91,6 +94,25 @@ export class WorkItemsController {
   @Get(':id/activity')
   findActivityLog(@Param('id') id: string, @CurrentUser() user: AuthUser) {
     return this.workItemsService.findActivityLog(id, user);
+  }
+
+  // GET /api/work-items/:id/image — streams the item's attached image, scoped by
+  // the same visibility rule as the item itself (404 if hidden or no image
+  // attached). Requires a valid JWT via the global guard, unlike the old public
+  // static /uploads route — a stolen/guessed filename alone no longer works.
+  @ApiOperation({ summary: "Get a work item's attached image" })
+  @ApiResponse({
+    status: 404,
+    description: 'Not found, not visible to the caller, or no image attached',
+  })
+  @Get(':id/image')
+  async getImage(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthUser,
+    @Res() res: Response,
+  ) {
+    const filename = await this.workItemsService.getImageFilenameForUser(id, user);
+    res.sendFile(join(process.cwd(), 'uploads', filename));
   }
 
   // POST /api/work-items — Manager-only; multipart body with an optional image attachment.
