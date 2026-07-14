@@ -111,7 +111,10 @@ export class WorkItemsController {
     @CurrentUser() user: AuthUser,
     @Res() res: Response,
   ) {
-    const filename = await this.workItemsService.getImageFilenameForUser(id, user);
+    const filename = await this.workItemsService.getImageFilenameForUser(
+      id,
+      user,
+    );
     res.sendFile(join(process.cwd(), 'uploads', filename));
   }
 

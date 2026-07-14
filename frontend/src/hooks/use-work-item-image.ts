@@ -10,7 +10,6 @@ export function useWorkItemImage(workItemId: string | null, hasImage: boolean) {
 
   useEffect(() => {
     if (!workItemId || !hasImage) {
-      setUrl(null);
       return;
     }
 
@@ -34,5 +33,5 @@ export function useWorkItemImage(workItemId: string | null, hasImage: boolean) {
     };
   }, [workItemId, hasImage]);
 
-  return url;
+  return workItemId && hasImage ? url : null;
 }
